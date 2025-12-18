@@ -348,11 +348,10 @@ cd scale_dream_d2f
 **Run Dream Evaluation:**
 
 ```shell
-bash eval_dream7.sh
+bash test_dream_d2f_LoPA.sh
 
 ```
 
-*Note: This script will execute the `scale_dream_d2f.py` pipeline. Ensure you have downloaded the necessary model checkpoints into the `model_cache` directory or configured the paths in the script accordingly.*
 
 ## ©️ Citation
 
