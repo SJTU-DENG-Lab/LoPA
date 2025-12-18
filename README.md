@@ -1,19 +1,15 @@
-<p align="center">
-    <img src="docs/assets/img/lopa/logo.png" width="300" alt="LOPA Logo">
-</p>
-
-## LOPA: Scaling dLLM Inference via Lookahead Parallel Decoding
+## LoPA: Scaling dLLM Inference via Lookahead Parallel Decoding
 
 <p align="center">
   <a href="https://arxiv.org/abs/2508.09192"><b>📄 Paper (Coming Soon)</b></a> •
-  <a href="https://github.com/zhijie-group/LOPA"><b>💻 GitHub</b></a> •
+  <a href="https://github.com/zhijie-group/LoPA"><b>💻 GitHub</b></a> •
   <a href="https://huggingface.co/SJTU-Deng-Lab"><b>🤗 Hugging Face</b></a>
 </p>
 
 
 <p align="center">
   <br>
-  <small><b>Throughput Performance of LoPA:</b> LOPA accelerates the single-sample throughput for D2F-Dream to up to <b>1073.9 tokens/s</b> and <b>856.5 tokens/s</b> on MBPP and GSM8K respectively, significantly outperforming baselines.</small>
+  <small><b>Throughput Performance of LoPA:</b> LoPA accelerates the single-sample throughput for D2F-Dream to up to <b>1073.9 tokens/s</b> and <b>856.5 tokens/s</b> on MBPP and GSM8K respectively, significantly outperforming baselines.</small>
 </p>
 
 <hr>
@@ -133,8 +129,8 @@ First, clone the repository and install the dependencies.
 
 ```shell
 # Clone the repository
-git clone [https://github.com/zhijie-group/LOPA.git](https://github.com/zhijie-group/LOPA.git)
-cd LOPA
+git clone [https://github.com/zhijie-group/LoPA.git](https://github.com/zhijie-group/LoPA.git)
+cd LoPA
 
 # Create environment (Recommended)
 conda create -n lopa python=3.10
@@ -198,15 +194,16 @@ This work is based on **D2F**, **Dream**, and **DiffuCoder**. We thank the autho
 
 ## ©️ Citation
 
-If you find LOPA useful for your research, please cite our paper:
+If you find LoPA useful for your research, please cite our paper:
 
 ```bibtex
 @article{xu2025lopa,
-  title={LOPA: Scaling dLLM Inference via Lookahead Parallel Decoding},
+  title={LoPA: Scaling dLLM Inference via Lookahead Parallel Decoding},
   author={Xu, Chenkai and Jin, Yijie and Li, Jiajun and Tu, Yi and Long, Guoping and Tu, Dandan and Hou, Tianqi and Yan, Junchi and Deng, Zhijie},
   journal={Preprint},
   year={2025}
 }
 
 ```
+
 
