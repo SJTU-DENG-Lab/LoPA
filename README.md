@@ -3,10 +3,10 @@
 </div>
 
 <p align="center">
-<a href="[https://arxiv.org/abs/2512.16229](https://arxiv.org/abs/2512.16229)"><b>📄 Paper</b></a> •
-<a href="[https://zhijie-group.github.io/blogs/lopa/](https://zhijie-group.github.io/blogs/lopa/)"><b>📝 Blog</b></a> •
-<a href="[https://github.com/zhijie-group/LoPA](https://github.com/zhijie-group/LoPA)"><b>💻 GitHub</b></a> •
-<a href="[https://huggingface.co/SJTU-Deng-Lab](https://huggingface.co/SJTU-Deng-Lab)"><b>🤗 Hugging Face</b></a>
+  <a href="https://arxiv.org/abs/2512.16229">📄 Paper</a> •
+  <a href="https://zhijie-group.github.io/blogs/lopa/">📝 Blog</a> •
+  <a href="https://github.com/zhijie-group/LoPA">💻 GitHub</a> •
+  <a href="https://huggingface.co/SJTU-Deng-Lab">🤗 Hugging Face</a>
 </p>
 
 <hr>
@@ -398,3 +398,4 @@ If you find LoPA useful for your research, please cite our paper:
 }
 
 ```
+
