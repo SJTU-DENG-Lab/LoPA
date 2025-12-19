@@ -390,12 +390,16 @@ bash test_dream_d2f_LoPA.sh
 If you find LoPA useful for your research, please cite our paper:
 
 ```bibtex
-@article{xu2025lopa,
-  title={LoPA: Scaling dLLM Inference via Lookahead Parallel Decoding},
-  author={Xu, Chenkai and Jin, Yijie and Li, Jiajun and Tu, Yi and Long, Guoping and Tu, Dandan and Hou, Tianqi and Yan, Junchi and Deng, Zhijie},
-  journal={arXiv preprint arXiv:2512.16229},
-  year={2025}
+@misc{xu2025lopascalingdllminference,
+      title={LoPA: Scaling dLLM Inference via Lookahead Parallel Decoding}, 
+      author={Chenkai Xu and Yijie Jin and Jiajun Li and Yi Tu and Guoping Long and Dandan Tu and Tianqi Hou and Junchi Yan and Zhijie Deng},
+      year={2025},
+      eprint={2512.16229},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2512.16229}, 
 }
 
 ```
+
 
