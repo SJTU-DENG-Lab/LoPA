@@ -1,9 +1,9 @@
 """
-统计功能模块：用于收集和分析生成过程中的性能数据
+Performance Statistics Module: Used for collecting and analyzing performance data during the generation process.
 
-功能：
-1. 以数据集为单位，统计峰值 TPS (tokens per second)
-2. 以数据集为单位，统计每个样例在每一步的 TPF (tokens per forward/step)
+Features:
+1. Dataset-level statistics for peak TPS (tokens per second)
+2. Dataset-level statistics for TPF (tokens per forward/step) for each sample at each step
 """
 
 import json
@@ -17,7 +17,7 @@ eval_logger = logging.getLogger(__name__)
 
 
 class GenerationStatsCollector:
-    """收集生成过程中的统计信息"""
+    """Collects statistics during the generation process"""
     
     def __init__(self, save_dir: Optional[str] = None):
         self.save_dir = save_dir
@@ -33,15 +33,15 @@ class GenerationStatsCollector:
         tpf_per_step: Optional[List[float]] = None,
         dataset_name: Optional[str] = None,
     ):
-        """记录单个样例的统计信息
+        """Records statistics for a single sample
         
         Args:
-            sample_idx: 样例索引
-            tokens: 生成的 token 数量
-            steps: 生成步数
-            generation_time: 生成耗时（秒）
-            tpf_per_step: 每一步的 TPF 列表（tokens per forward）
-            dataset_name: 数据集名称
+            sample_idx: Sample index
+            tokens: Number of tokens generated
+            steps: Number of generation steps
+            generation_time: Generation time (seconds)
+            tpf_per_step: List of TPF (tokens per forward) for each step
+            dataset_name: Dataset name
         """
         tps = tokens / generation_time if generation_time > 0 else 0.0
         avg_tpf = tokens / steps if steps > 0 else 0.0
@@ -59,13 +59,13 @@ class GenerationStatsCollector:
         self.sample_stats.append(sample_stat)
         
     def compute_dataset_stats(self, dataset_name: Optional[str] = None) -> Dict[str, Any]:
-        """计算数据集级别的统计信息
+        """Computes dataset-level statistics
         
         Args:
-            dataset_name: 数据集名称，如果为 None 则统计所有样例
+            dataset_name: Dataset name, if None statistics for all samples are computed
             
         Returns:
-            包含峰值 TPS 等统计信息的字典
+            Dictionary containing statistics like peak TPS
         """
         if dataset_name:
             relevant_samples = [s for s in self.sample_stats if s.get("dataset_name") == dataset_name]
@@ -80,14 +80,14 @@ class GenerationStatsCollector:
         avg_tps = sum(tps_list) / len(tps_list) if tps_list else 0.0
         min_tps = min(tps_list) if tps_list else 0.0
         
-        # 计算最快前10个样例的TPS均值
+        # Calculate mean TPS for top 10 fastest samples
         top10_tps_mean = 0.0
         if tps_list:
             sorted_tps = sorted(tps_list, reverse=True)
             top10_count = min(10, len(sorted_tps))
             top10_tps_mean = sum(sorted_tps[:top10_count]) / top10_count if top10_count > 0 else 0.0
         
-        # 找到最高速的样例信息
+        # Find information for the fastest sample
         peak_sample = None
         if relevant_samples:
             peak_sample_idx = max(range(len(relevant_samples)), key=lambda i: relevant_samples[i]["tps"])
@@ -110,8 +110,8 @@ class GenerationStatsCollector:
             "dataset_name": dataset_name or "all",
             "num_samples": len(relevant_samples),
             "peak_tps": peak_tps,
-            "peak_sample": peak_sample,  # 最高速样例的详细信息
-            "top10_tps_mean": top10_tps_mean,  # 最快前10个样例的TPS均值
+            "peak_sample": peak_sample,  # Details of the fastest sample
+            "top10_tps_mean": top10_tps_mean,  # Mean TPS of the top 10 fastest samples
             "avg_tps": avg_tps,
             "min_tps": min_tps,
             "overall_tps": overall_tps,
@@ -129,13 +129,13 @@ class GenerationStatsCollector:
         return stats
     
     def build_tpf_table(self, dataset_name: Optional[str] = None) -> List[Dict[str, Any]]:
-        """构建每个样例在每一步的 TPF 表格
+        """Builds a TPF table for each sample at each step
         
         Args:
-            dataset_name: 数据集名称，如果为 None 则包含所有样例
+            dataset_name: Dataset name, if None all samples are included
             
         Returns:
-            TPF 表格，每行包含样例索引、步数和对应的 TPF
+            TPF table, each row contains sample index, step number, and corresponding TPF
         """
         if dataset_name:
             relevant_samples = [s for s in self.sample_stats if s.get("dataset_name") == dataset_name]
@@ -151,7 +151,7 @@ class GenerationStatsCollector:
             for step_idx, tpf in enumerate(tpf_per_step):
                 tpf_table.append({
                     "sample_idx": sample_idx,
-                    "step": step_idx + 1,  # 从1开始计数
+                    "step": step_idx + 1,  # Start counting from 1
                     "tpf": tpf,
                     "dataset_name": dataset_name_actual,
                 })
@@ -159,10 +159,10 @@ class GenerationStatsCollector:
         return tpf_table
     
     def save_stats(self, output_path: Optional[str] = None):
-        """保存统计信息到文件
+        """Saves statistics to a file
         
         Args:
-            output_path: 输出文件路径，如果为 None 则使用 save_dir
+            output_path: Output file path, if None save_dir is used
         """
         if output_path is None:
             if self.save_dir is None:
@@ -172,13 +172,13 @@ class GenerationStatsCollector:
             timestamp = time.strftime("%Y-%m-%dT%H-%M-%S")
             output_path = os.path.join(self.save_dir, f"generation_stats_{timestamp}.json")
         
-        # 计算所有数据集的统计信息
+        # Calculate statistics for all datasets
         datasets = set(s.get("dataset_name") for s in self.sample_stats if s.get("dataset_name"))
         for dataset_name in datasets:
             self.compute_dataset_stats(dataset_name)
-        self.compute_dataset_stats()  # 计算总体统计
+        self.compute_dataset_stats()  # Calculate overall statistics
         
-        # 构建 TPF 表格
+        # Build TPF table
         tpf_table = self.build_tpf_table()
         
         output_data = {
@@ -193,7 +193,7 @@ class GenerationStatsCollector:
             
         eval_logger.info(f"Statistics saved to {output_path}")
         
-        # 同时保存 CSV 格式的 TPF 表格（便于分析）
+        # Also save TPF table in CSV format (for easier analysis)
         if tpf_table:
             csv_path = output_path.replace(".json", "_tpf_table.csv")
             import csv
@@ -205,27 +205,27 @@ class GenerationStatsCollector:
 
 
 def load_stats_from_file(stats_file: str) -> Dict[str, Any]:
-    """从文件加载统计信息
+    """Loads statistics from a file
     
     Args:
-        stats_file: 统计文件路径
+        stats_file: Path to the statistics file
         
     Returns:
-        包含统计信息的字典
+        Dictionary containing statistics
     """
     with open(stats_file, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def analyze_peak_tps(stats_data: Dict[str, Any], dataset_name: Optional[str] = None) -> Dict[str, float]:
-    """分析峰值 TPS
+    """Analyzes peak TPS
     
     Args:
-        stats_data: 从 load_stats_from_file 加载的数据
-        dataset_name: 数据集名称，如果为 None 则分析所有数据集
+        stats_data: Data loaded from load_stats_from_file
+        dataset_name: Dataset name, if None all datasets are analyzed
         
     Returns:
-        包含峰值 TPS 信息的字典
+        Dictionary containing peak TPS information
     """
     dataset_stats = stats_data.get("dataset_stats", {})
     
@@ -241,7 +241,7 @@ def analyze_peak_tps(stats_data: Dict[str, Any], dataset_name: Optional[str] = N
             eval_logger.warning(f"Dataset {dataset_name} not found in stats")
             return {}
     else:
-        # 返回所有数据集的峰值 TPS
+        # Returns peak TPS for all datasets
         result = {}
         for name, stats in dataset_stats.items():
             result[name] = {
@@ -253,14 +253,14 @@ def analyze_peak_tps(stats_data: Dict[str, Any], dataset_name: Optional[str] = N
 
 
 def get_tpf_table(stats_data: Dict[str, Any], dataset_name: Optional[str] = None) -> List[Dict[str, Any]]:
-    """获取 TPF 表格
+    """Gets TPF table
     
     Args:
-        stats_data: 从 load_stats_from_file 加载的数据
-        dataset_name: 数据集名称，如果为 None 则返回所有样例
+        stats_data: Data loaded from load_stats_from_file
+        dataset_name: Dataset name, if None returns all samples
         
     Returns:
-        TPF 表格列表
+        List of TPF table entries
     """
     tpf_table = stats_data.get("tpf_table", [])
     
@@ -271,10 +271,10 @@ def get_tpf_table(stats_data: Dict[str, Any], dataset_name: Optional[str] = None
 
 
 if __name__ == "__main__":
-    # 示例用法
+    # Example usage
     collector = GenerationStatsCollector(save_dir="./stats_output")
     
-    # 模拟一些数据
+    # Simulate some data
     collector.record_sample(
         sample_idx=0,
         tokens=100,
@@ -293,10 +293,10 @@ if __name__ == "__main__":
         dataset_name="test_dataset",
     )
     
-    # 计算统计信息
+    # Compute statistics
     stats = collector.compute_dataset_stats("test_dataset")
     print("Dataset stats:", json.dumps(stats, indent=2))
     
-    # 保存统计信息
+    # Save statistics
     collector.save_stats()
 
