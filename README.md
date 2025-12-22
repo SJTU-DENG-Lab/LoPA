@@ -31,8 +31,15 @@ Key features of LoPA include:
 
 ## 🔥 News
 
+* **Dec 22, 2025:** We released the code and paper for LoPA-Dist-NV!
 * **Dec 18, 2025:** We released the code and paper for LoPA!
 * **Dec 2025:** LoPA achieves >1000 tokens/s on Ascend 910C hardware.
+
+## 🔮 Future Works
+
+* **Diffulex:** We are working on a new inference framework for dLLMs, which is flexible and easy to extend. Diffulex supports multiple decoding strategies including D2F, BlockDiffusion, and Fast-dLLM-v2, which is soon to be released. **You can find the code [here](https://github.com/zhijie-group/Diffulex).**
+
+* **LoPA-SDAR:** We will explore adapting LoPA to SDAR and other confidence-driven diffusion language models to further demonstrate its generalizability and effectiveness across diverse model architectures.
 
 ## Contents
 
@@ -230,10 +237,6 @@ To fully exploit LoPA’s parallelism, we designed **LoPA-Dist**, a distributed 
 <p align="center">
 <img src="docs/assets/img/figure5.png" width="100%" alt="System Design">
 
-
-
-
-
 <small style="color: gray;">Figure 5. Overview of LoPA Branch Parallel Distributed Inference System Design. A key distinction lies in the KV cache management protocol tailored for different backends.</small>
 </p>
 
@@ -267,14 +270,14 @@ The system distributes candidate branches across multiple GPUs for concurrent pr
 <tr>
 <td rowspan="2" style="border: 1px solid #ddd; padding: 8px;">D2F-Dream-Base</td>
 <td style="border: 1px solid #ddd; padding: 8px;">LoPA-Dist-NV</td>
-<td style="border: 1px solid #ddd; padding: 8px;">630.28</td>
-<td style="border: 1px solid #ddd; padding: 8px;">1472.37</td>
-<td style="border: 1px solid #ddd; padding: 8px;"><b>15.69</b></td>
-<td style="border: 1px solid #ddd; padding: 8px;">0.84</td>
-<td style="border: 1px solid #ddd; padding: 8px;">566.97</td>
-<td style="border: 1px solid #ddd; padding: 8px;">1305.86</td>
-<td style="border: 1px solid #ddd; padding: 8px;"><b>13.31</b></td>
-<td style="border: 1px solid #ddd; padding: 8px;">0.93</td>
+<td style="border: 1px solid #ddd; padding: 8px;">708.48</td>
+<td style="border: 1px solid #ddd; padding: 8px;">1470.95</td>
+<td style="border: 1px solid #ddd; padding: 8px;"><b>15.55</b></td>
+<td style="border: 1px solid #ddd; padding: 8px;">0.74</td>
+<td style="border: 1px solid #ddd; padding: 8px;">619.33</td>
+<td style="border: 1px solid #ddd; padding: 8px;">1299.25</td>
+<td style="border: 1px solid #ddd; padding: 8px;"><b>13.16</b></td>
+<td style="border: 1px solid #ddd; padding: 8px;">0.85</td>
 </tr>
 <tr>
 <td style="border: 1px solid #ddd; padding: 8px;">LoPA-Dist-Ascend</td>
@@ -290,14 +293,14 @@ The system distributes candidate branches across multiple GPUs for concurrent pr
 <tr>
 <td rowspan="2" style="border: 1px solid #ddd; padding: 8px;">D2F-Dream-Instruct</td>
 <td style="border: 1px solid #ddd; padding: 8px;">LoPA-Dist-NV</td>
-<td style="border: 1px solid #ddd; padding: 8px;">543.32</td>
-<td style="border: 1px solid #ddd; padding: 8px;">1531.64</td>
-<td style="border: 1px solid #ddd; padding: 8px;"><b>9.45</b></td>
-<td style="border: 1px solid #ddd; padding: 8px;">0.16</td>
-<td style="border: 1px solid #ddd; padding: 8px;">536.71</td>
-<td style="border: 1px solid #ddd; padding: 8px;">1141.71</td>
-<td style="border: 1px solid #ddd; padding: 8px;"><b>11.41</b></td>
-<td style="border: 1px solid #ddd; padding: 8px;">0.29</td>
+<td style="border: 1px solid #ddd; padding: 8px;">636.55</td>
+<td style="border: 1px solid #ddd; padding: 8px;">1811.71</td>
+<td style="border: 1px solid #ddd; padding: 8px;"><b>9.52</b></td>
+<td style="border: 1px solid #ddd; padding: 8px;">0.14</td>
+<td style="border: 1px solid #ddd; padding: 8px;">609.90</td>
+<td style="border: 1px solid #ddd; padding: 8px;">1407.56</td>
+<td style="border: 1px solid #ddd; padding: 8px;"><b>11.42</b></td>
+<td style="border: 1px solid #ddd; padding: 8px;">0.26</td>
 </tr>
 <tr>
 <td style="border: 1px solid #ddd; padding: 8px;">LoPA-Dist-Ascend</td>
@@ -353,8 +356,6 @@ To evaluate **DiffuCoder** with LoPA on coding benchmarks (HumanEval/MBPP), navi
 
 ```shell
 cd scale_diffucoder_d2f
-
-
 ```
 
 **Run LoPA on HumanEval:**
@@ -383,6 +384,20 @@ cd scale_dream_d2f
 
 ```shell
 bash test_dream_d2f_LoPA.sh
+```
+
+#### LoPA-Dist-NV Experiments
+
+To evaluate the performance of LoPA-Dist-NV, navigate to the `lopa_dist_nv` directory:
+
+```shell
+cd lopa_dist_nv
+```
+
+**Run LoPA-Dist-NV Experiments:**
+
+```shell
+bash launch_all.sh
 ```
 
 ## ©️ Citation
