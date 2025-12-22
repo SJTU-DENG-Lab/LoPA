@@ -71,7 +71,7 @@ LoPA demonstrates significant improvements in Tokens Per Forward pass (TPF) and 
 
 
 
-<small style="color: gray;">Figure 3. Scaling Curves of LoPA. LoPA scales the tokens per forward pass (TPS) for D2F-Dream and D2F-DiffuCoder to up to 10.1 and 8.3 on GSM8k and HumanEval+ respectively, with comparable performance.</small>
+<small style="color: gray;">Figure 3. Scaling Curves of LoPA. LoPA scales the TPF for D2F-Dream and D2F-DiffuCoder to up to 10.1 and 8.3 on GSM8k and HumanEval+ respectively, with comparable performance.</small>
 </p>
 
 <p align="center">
@@ -401,3 +401,4 @@ If you find LoPA useful for your research, please cite our paper:
 }
 
 ```
+
