@@ -11,6 +11,10 @@
 
 <hr>
 
+
+https://github.com/user-attachments/assets/6fb2c8e9-23f9-4025-bda3-14ee7b839c9b
+
+
 **Lookahead Parallel Decoding (LoPA)** is a training-free, plug-and-play algorithm designed to break the parallelism bottleneck in Diffusion Large Language Models (dLLMs). By identifying that parallelism is highly sensitive to the Token Filling Order (TFO), LoPA actively searches for optimal TFOs to maximize future confidence.
 
 Key features of LoPA include:
@@ -847,5 +851,6 @@ If you find LoPA useful for your research, please cite our paper:
 }
 
 ```
+
 
 
