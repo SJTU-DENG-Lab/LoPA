@@ -48,10 +48,10 @@ humaneval_verification_force_base_winners="false false false"
 
 
 # Base model path
-base_model=/home/chenkai/data/models/Dream-v0-Instruct-7B
+base_model=Dream-v0-Instruct-7B
 
 lora_models=(
-    "/home/chenkai/data/ckpt/wx_dream-new/Decoder-ddt_test-20k"
+    "SJTU-Deng-Lab/D2F_Dream_Instruct_7B_Lora"
 )
 
 # Create arrays from space-separated strings
