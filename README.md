@@ -6,7 +6,8 @@
   <a href="https://arxiv.org/abs/2512.16229">📄 Paper</a> •
   <a href="https://zhijie-group.github.io/blogs/lopa/">📝 Blog</a> •
   <a href="https://github.com/zhijie-group/Diffulex">🚀 Engine</a> •
-  <a href="https://huggingface.co/SJTU-Deng-Lab">🤗 Hugging Face</a>
+  <a href="https://huggingface.co/SJTU-Deng-Lab/D2F_Dream_Instruct_7B_Lora/tree/main">🤗 D2F_Dream_Instruct_7B_Lora</a> •
+  <a href="https://huggingface.co/SJTU-Deng-Lab/D2F_DiffuCoder_Instruct_7B_Lora/tree/main">🤗 D2F_DiffuCoder_Instruct_7B_Lora</a>
 </p>
 
 <hr>
@@ -851,6 +852,7 @@ If you find LoPA useful for your research, please cite our paper:
 }
 
 ```
+
 
 
 
