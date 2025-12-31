@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BASE_MODEL_PATH=${1:-"/home/chenkai/data/models/DiffuCoder-7B-Instruct"}
-LORA_PATH=${2:-"/home/chenkai/data/ckpt/diffucoder_wx"}
+BASE_MODEL_PATH=${1:-"DiffuCoder-7B-Instruct"}
+LORA_PATH=${2:-"SJTU-Deng-Lab/D2F_DiffuCoder_Instruct_7B_Lora"}
 TP=${3:-1}
 OUTPUT_DIR=${4:-"results/diffucoder_0.3_0.95_0.95_new"}
 DEVICE=${5:-"cuda:0"}
