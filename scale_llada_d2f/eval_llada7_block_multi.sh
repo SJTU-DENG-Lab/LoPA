@@ -1,69 +1,69 @@
 #!/bin/bash
 # filepath: /home/chenkai/data/Dream/eval/eval_dream_lora_para.sh
 
-tasks="gsm8k gsm8k gsm8k mbpp mbpp mbpp"
-nshots="4 4 4 3 3 3"
-lengths="512 512 512 512 512 512"
-temperatures="0 0 0 0 0 0"
-limits="10000 10000 10000 10000 10000 10000"
-block_sizes="64 64 64 32 32 32"
-skip_thresholds="0.9 0.9 0.9 0.9 0.9 0.9"
-top_ps="none none none none none none"
-dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"
-sampling_strategies="default default default default default default"
-branching_factors="2 3 4 2 3 4"
-branch_topps="1 1 1 1 1 1"
-selection_conf_alphas="0 0 0 0 0 0"
-base_branch_competitions="true true true true true true"
-verification_force_base_winners="false false false false false false"
+tasks="gsm8k gsm8k gsm8k gsm8k mbpp mbpp mbpp mbpp minerva_math minerva_math minerva_math minerva_math"
+nshots="4 4 4 4 3 3 3 3 4 4 4 4"
+lengths="256 256 256 256 512 512 512 512 256 256 256 256"
+temperatures="0 0 0 0 0 0 0 0 0 0 0 0"
+limits="10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000"
+block_sizes="32 32 32 32 32 32 32 32 32 32 32 32"
+skip_thresholds="0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9"
+top_ps="none none none none none none none none none none none none"
+dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"
+sampling_strategies="default default default default default default default default default default default default"
+branching_factors="2 2 3 4 2 2 3 4 2 2 3 4"
+branch_topps="1 1 1 1 1 1 1 1 1 1 1 1"
+selection_conf_alphas="0 0 0 0 0 0 0 0 0 0 0 0"
+base_branch_competitions="true true true true true true true true true true true true"
+verification_force_base_winners="false true false false false true false false false true false false"
 
-tasks="gsm8k gsm8k gsm8k"
-nshots="4 4 4"
-lengths="512 512 512"
-temperatures="0 0 0"
-limits="10000 10000 10000"
-block_sizes="64 64 64"
-skip_thresholds="0.9 0.9 0.9"
-top_ps="none none none"
-dtypes="bfloat16 bfloat16 bfloat16"
-sampling_strategies="default default default"
-branching_factors="2 3 4"
-branch_topps="0.5 0.5 0.5"
-selection_conf_alphas="0.5 0.5 0.5"
-base_branch_competitions="true true true"
-verification_force_base_winners="false false false"
+# tasks="gsm8k gsm8k gsm8k"
+# nshots="4 4 4"
+# lengths="512 512 512"
+# temperatures="0 0 0"
+# limits="10000 10000 10000"
+# block_sizes="64 64 64"
+# skip_thresholds="0.9 0.9 0.9"
+# top_ps="none none none"
+# dtypes="bfloat16 bfloat16 bfloat16"
+# sampling_strategies="default default default"
+# branching_factors="2 3 4"
+# branch_topps="0.5 0.5 0.5"
+# selection_conf_alphas="0.5 0.5 0.5"
+# base_branch_competitions="true true true"
+# verification_force_base_winners="false false false"
 
-tasks="gsm8k"
-nshots="4"
-lengths="512"
-temperatures="0"
-limits="10000"
-block_sizes="64"
-skip_thresholds="0.9"
-top_ps="none"
-dtypes="bfloat16"
-sampling_strategies="default"
-branching_factors="2"
-branch_topps="1"
-selection_conf_alphas="0"
-base_branch_competitions="true"
-verification_force_base_winners="false"
+# tasks="gsm8k"
+# nshots="4"
+# lengths="512"
+# temperatures="0"
+# limits="10000"
+# block_sizes="64"
+# skip_thresholds="0.9"
+# top_ps="none"
+# dtypes="bfloat16"
+# sampling_strategies="default"
+# branching_factors="2"
+# branch_topps="1"
+# selection_conf_alphas="0"
+# base_branch_competitions="true"
+# verification_force_base_winners="false"
 
 # HumanEval参数配置列表
-humaneval_nshots="0 0 0 0 0 0"  # HumanEval的few-shot数量
-humaneval_lengths="512 512 512 512 512 512"  # HumanEval的生成长度
-humaneval_temperatures="0 0 0 0 0 0"  # HumanEval的温度参数
-humaneval_limits="10000 10000 10000 10000 10000 10000"  # HumanEval的生成限制
-humaneval_block_sizes="32 32 32 32 32 32"  # HumanEval的块大小
-humaneval_skip_thresholds="0.9 0.9 0.9 0.9 0.9 0.9"  # HumanEval的跳过阈值
-humaneval_top_ps="none none none none none none"  # HumanEval的top_p参数
-humaneval_dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"  # HumanEval的dtype参数
-humaneval_sampling_strategies="default default default default default default"  # HumanEval的采样策略参数
-humaneval_branching_factors="2 3 4 5 6 7"  # HumanEval的分支因子
-humaneval_branch_topps="1 1 1 1 1 1"  # HumanEval的分支置信度阈值参数
-humaneval_selection_conf_alphas="0 0 0 0 0 0"  # HumanEval的选择置信度权重参数
-humaneval_base_branch_competitions="true true true true true true"  # HumanEval的基础分支竞争
-humaneval_verification_force_base_winners="true true true true true true"  # HumanEval的验证强制基础分支胜出
+humaneval_nshots="0 0 0 0"  # HumanEval的few-shot数量
+humaneval_lengths="512 512 512 512"  # HumanEval的生成长度
+humaneval_temperatures="0 0 0 0"  # HumanEval的温度参数
+humaneval_limits="10000 10000 10000 10000"  # HumanEval的生成限制
+humaneval_block_sizes="32 32 32 32"  # HumanEval的块大小
+humaneval_skip_thresholds="0.9 0.9 0.9 0.9"  # HumanEval的跳过阈值
+humaneval_top_ps="none none none none"  # HumanEval的top_p参数
+humaneval_dtypes="bfloat16 bfloat16 bfloat16 bfloat16"  # HumanEval的dtype参数
+humaneval_sampling_strategies="default default default default"  # HumanEval的采样策略参数
+humaneval_branching_factors="2 2 3 4"  # HumanEval的分支因子
+humaneval_branch_topps="1 1 1 1"  # HumanEval的分支置信度阈值参数
+humaneval_selection_conf_alphas="0 0 0 0"  # HumanEval的选择置信度权重参数
+humaneval_base_branch_competitions="true true true true"  # HumanEval的基础分支竞争
+humaneval_verification_force_base_winners="true false false false"  # HumanEval的验证强制基础分支胜出
 
 
 # tasks="mbpp mbpp mbpp mbpp mbpp mbpp"
@@ -90,7 +90,7 @@ humaneval_verification_force_base_winners="true true true true true true"  # Hum
 # 基础模型路径
 # base_model=/data1/xck/models/Dream-v0-Instruct-7B
 # 基础模型路径
-base_model=/home/chenkai/data/models/llada-8b-instruct
+base_model=/mnt/rl/xinyi/models/LLaDA-8B-Instruct
 
 lora_models=(
     "$base_model"
@@ -243,6 +243,9 @@ elif [[ $humaneval_multibranch_array_length -ne $humaneval_array_length ]]; then
 fi
 
 export HF_ALLOW_CODE_EVAL=1
+export CURL_CA_BUNDLE=""
+export REQUESTS_CA_BUNDLE=""
+export HF_ENDPOINT="https://hf-mirror.com"
 # 对每个LoRA模型进行评测
 for lora_model in "${lora_models[@]}"; do
 # 获取LoRA模型的基本名称用于输出目录
@@ -255,7 +258,7 @@ for lora_model in "${lora_models[@]}"; do
     
     # HumanEval评估（参数列表遍历）
     for i in "${!HUMANEVAL_NSHOTS_ARRAY[@]}"; do
-        output_path="eval_llada_chat_try7_full_fix_multi_fix/${lora_model_name}/humaneval-ns${HUMANEVAL_NSHOTS_ARRAY[$i]}-len${HUMANEVAL_LENGTHS_ARRAY[$i]}-temp${HUMANEVAL_TEMP_ARRAY[$i]}-limit${HUMANEVAL_LIMITS_ARRAY[$i]}-block${HUMANEVAL_BLOCK_SIZES_ARRAY[$i]}-skip${HUMANEVAL_SKIP_THRESHOLDS_ARRAY[$i]}-topp${HUMANEVAL_TOP_PS_ARRAY[$i]}-dtype${HUMANEVAL_DTYPES_ARRAY[$i]}-sampling${HUMANEVAL_SAMPLING_STRATEGIES_ARRAY[$i]}-branchfactor${HUMANEVAL_BRANCHING_FACTORS_ARRAY[$i]}-branchtopp${HUMANEVAL_BRANCH_TOPPS_ARRAY[$i]}-selconfal${HUMANEVAL_SELECTION_CONF_ALPHAS_ARRAY[$i]}-basecompete${HUMANEVAL_BASE_BRANCH_COMPETITIONS_ARRAY[$i]}-forcebase${HUMANEVAL_VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]}"
+        output_path="results/eval_llada_chat_try7_fast_multi/${lora_model_name}/humaneval-ns${HUMANEVAL_NSHOTS_ARRAY[$i]}-len${HUMANEVAL_LENGTHS_ARRAY[$i]}-temp${HUMANEVAL_TEMP_ARRAY[$i]}-limit${HUMANEVAL_LIMITS_ARRAY[$i]}-block${HUMANEVAL_BLOCK_SIZES_ARRAY[$i]}-skip${HUMANEVAL_SKIP_THRESHOLDS_ARRAY[$i]}-topp${HUMANEVAL_TOP_PS_ARRAY[$i]}-dtype${HUMANEVAL_DTYPES_ARRAY[$i]}-sampling${HUMANEVAL_SAMPLING_STRATEGIES_ARRAY[$i]}-branchfactor${HUMANEVAL_BRANCHING_FACTORS_ARRAY[$i]}-branchtopp${HUMANEVAL_BRANCH_TOPPS_ARRAY[$i]}-selconfal${HUMANEVAL_SELECTION_CONF_ALPHAS_ARRAY[$i]}-basecompete${HUMANEVAL_BASE_BRANCH_COMPETITIONS_ARRAY[$i]}-forcebase${HUMANEVAL_VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]}"
         echo "Running HumanEval evaluation $((i+1))/${humaneval_array_length} for $lora_model_name..."
         echo "HumanEval Config: Shots: ${HUMANEVAL_NSHOTS_ARRAY[$i]}, Length: ${HUMANEVAL_LENGTHS_ARRAY[$i]}, Temperature: ${HUMANEVAL_TEMP_ARRAY[$i]}, Limit: ${HUMANEVAL_LIMITS_ARRAY[$i]}, Block Size: ${HUMANEVAL_BLOCK_SIZES_ARRAY[$i]}, Skip Threshold: ${HUMANEVAL_SKIP_THRESHOLDS_ARRAY[$i]}, Top_p: ${HUMANEVAL_TOP_PS_ARRAY[$i]}, Sampling Strategy: ${HUMANEVAL_SAMPLING_STRATEGIES_ARRAY[$i]}, Dtype: ${HUMANEVAL_DTYPES_ARRAY[$i]}, Branching Factor: ${HUMANEVAL_BRANCHING_FACTORS_ARRAY[$i]}, Branch Topp: ${HUMANEVAL_BRANCH_TOPPS_ARRAY[$i]}, Selection Conf Alpha: ${HUMANEVAL_SELECTION_CONF_ALPHAS_ARRAY[$i]}, Base Competition: ${HUMANEVAL_BASE_BRANCH_COMPETITIONS_ARRAY[$i]}, Force Base Winner: ${HUMANEVAL_VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]}; Output: $output_path"
         
@@ -279,7 +282,7 @@ for lora_model in "${lora_models[@]}"; do
     # 其他任务的评估
     for i in "${!TASKS_ARRAY[@]}"; do
         # Create comprehensive output path with all hyperparameters including LoRA-specific info and multi-branch params
-        output_path="eval_llada_chat_try7_full_fix_multi_fix/${lora_model_name}/${TASKS_ARRAY[$i]}-ns${NSHOTS_ARRAY[$i]}-len${LENGTH_ARRAY[$i]}-temp${TEMP_ARRAY[$i]}-limit${LIMITS_ARRAY[$i]}-block${BLOCK_SIZES_ARRAY[$i]}-skip${SKIP_THRESHOLDS_ARRAY[$i]}-topp${TOP_PS_ARRAY[$i]}-dtype${DTYPES_ARRAY[$i]}-sampling${SAMPLING_STRATEGIES_ARRAY[$i]}-branchfactor${BRANCHING_FACTORS_ARRAY[$i]}-branchtopp${BRANCH_TOPPS_ARRAY[$i]}-selconfal${SELECTION_CONF_ALPHAS_ARRAY[$i]}-basecompete${BASE_BRANCH_COMPETITIONS_ARRAY[$i]}-forcebase${VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]}"
+        output_path="results/eval_llada_chat_try7_fast_multi/${lora_model_name}/${TASKS_ARRAY[$i]}-ns${NSHOTS_ARRAY[$i]}-len${LENGTH_ARRAY[$i]}-temp${TEMP_ARRAY[$i]}-limit${LIMITS_ARRAY[$i]}-block${BLOCK_SIZES_ARRAY[$i]}-skip${SKIP_THRESHOLDS_ARRAY[$i]}-topp${TOP_PS_ARRAY[$i]}-dtype${DTYPES_ARRAY[$i]}-sampling${SAMPLING_STRATEGIES_ARRAY[$i]}-branchfactor${BRANCHING_FACTORS_ARRAY[$i]}-branchtopp${BRANCH_TOPPS_ARRAY[$i]}-selconfal${SELECTION_CONF_ALPHAS_ARRAY[$i]}-basecompete${BASE_BRANCH_COMPETITIONS_ARRAY[$i]}-forcebase${VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]}"
         echo "Task: ${TASKS_ARRAY[$i]}, Shots: ${NSHOTS_ARRAY[$i]}, Length: ${LENGTH_ARRAY[$i]}, Temperature: ${TEMP_ARRAY[$i]}, Limit: ${LIMITS_ARRAY[$i]}, Block Size: ${BLOCK_SIZES_ARRAY[$i]}, Skip Threshold: ${SKIP_THRESHOLDS_ARRAY[$i]}, Top_p: ${TOP_PS_ARRAY[$i]}, Sampling Strategy: ${SAMPLING_STRATEGIES_ARRAY[$i]}, Dtype: ${DTYPES_ARRAY[$i]}, Branching Factor: ${BRANCHING_FACTORS_ARRAY[$i]}, Branch Topp: ${BRANCH_TOPPS_ARRAY[$i]}, Selection Conf Alpha: ${SELECTION_CONF_ALPHAS_ARRAY[$i]}, Base Competition: ${BASE_BRANCH_COMPETITIONS_ARRAY[$i]}, Force Base Winner: ${VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]}; Output: $output_path"
         
         # 构建model_args，根据top_p是否为none来决定是否包含top_p参数，并添加多分支参数
