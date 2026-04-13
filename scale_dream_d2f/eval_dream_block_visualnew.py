@@ -456,7 +456,7 @@ class Dream(LM):
             # [关键修改] 将最大序列长度更新为实际处理的结束位置
             # 这样绘图函数初始化矩阵和设置坐标轴时，就会自动裁剪掉右边的空白
             vis_data['max_seq_length'] = actual_process_end
-            self._generate_visualization(vis_data, prompt_len, self.total_prompts)
+            # self._generate_visualization(vis_data, prompt_len, self.total_prompts)
 
         return responses
     

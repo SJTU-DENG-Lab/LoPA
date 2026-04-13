@@ -1,47 +1,67 @@
 #!/bin/bash
 # filepath: /home/chenkai/data/Dream/eval/eval_dream_lora_para.sh
 
-tasks="gsm8k gsm8k gsm8k minerva_math minerva_math minerva_math"
-nshots="4 4 4 3 3 3"
-lengths="512 512 512 512 512 512"
-temperatures="0 0 0 0 0 0"
-limits="10000 10000 10000 10000 10000 10000"
-block_sizes="64 64 64 32 32 32"
-block_add_thresholds="0.9 0.9 0.9 0.9 0.9 0.9"
-decoded_token_thresholds="0.95 0.95 0.95 0.95 0.95 0.95"
-skip_thresholds="0.9 0.9 0.9 0.9 0.9 0.9"
-top_ps="none none none none none none"
-dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"
-sampling_strategies="neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy"
-max_branches_kepts="1 1 1 1 1 1"
-branching_factors="2 3 4 2 3 4"
-branch_topps="1 1 1 1 1 1"
-selection_conf_alphas="0 0 0 0 0 0"
-branch_verification_modes="true true true true true true"
-base_branch_competitions="true true true true true true"
-verification_force_base_winners="false false false false false false"
+# tasks="gsm8k gsm8k gsm8k minerva_math minerva_math minerva_math"
+# nshots="4 4 4 3 3 3"
+# lengths="512 512 512 512 512 512"
+# temperatures="0 0 0 0 0 0"
+# limits="10000 10000 10000 10000 10000 10000"
+# block_sizes="64 64 64 32 32 32"
+# block_add_thresholds="0.9 0.9 0.9 0.9 0.9 0.9"
+# decoded_token_thresholds="0.95 0.95 0.95 0.95 0.95 0.95"
+# skip_thresholds="0.9 0.9 0.9 0.9 0.9 0.9"
+# top_ps="none none none none none none"
+# dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"
+# sampling_strategies="neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy"
+# max_branches_kepts="1 1 1 1 1 1"
+# branching_factors="2 3 4 2 3 4"
+# branch_topps="1 1 1 1 1 1"
+# selection_conf_alphas="0 0 0 0 0 0"
+# branch_verification_modes="true true true true true true"
+# base_branch_competitions="true true true true true true"
+# verification_force_base_winners="false false false false false false"
 
-# tasks="gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k mbpp mbpp mbpp mbpp mbpp mbpp mbpp mbpp mbpp mbpp mbpp mbpp"
-# nshots="4 4 4 4 4 4 4 4 4 4 4 4 3 3 3 3 3 3 3 3 3 3 3 3"
-# lengths="512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512"
-# temperatures="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
-# limits="10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000"
-# block_sizes="32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32"
-# block_add_thresholds="0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1"
-# decoded_token_thresholds="0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95"
-# skip_thresholds="0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9"
-# top_ps="none none none none none none none none none none none none none none none none none none none none none none none none"
-# dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"
-# sampling_strategies="neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy"
-# max_branches_kepts="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"
-# branching_factors="2 3 4 5 6 7 8 9 10 11 12 13 2 3 4 5 6 7 8 9 10 11 12 13"
-# branch_topps="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"
-# selection_conf_alphas="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
-# branch_verification_modes="true true true true true true true true true true true true true true true true true true true true true true true true"
-# base_branch_competitions="true true true true true true true true true true true true true true true true true true true true true true true true"
-# verification_force_base_winners="false false false false false false false false false false false false false false false false false false false false false false false false"
+tasks="gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k mbpp mbpp mbpp mbpp mbpp mbpp mbpp mbpp mbpp mbpp mbpp mbpp"
+nshots="4 4 4 4 4 4 4 4 4 4 4 4 3 3 3 3 3 3 3 3 3 3 3 3"
+lengths="512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512 512"
+temperatures="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+limits="10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000"
+block_sizes="32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32"
+block_add_thresholds="0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1"
+decoded_token_thresholds="0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95"
+skip_thresholds="0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9"
+top_ps="none none none none none none none none none none none none none none none none none none none none none none none none"
+dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"
+sampling_strategies="neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy"
+max_branches_kepts="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"
+branching_factors="2 3 4 5 6 7 8 9 10 11 12 13 2 3 4 5 6 7 8 9 10 11 12 13"
+branch_topps="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"
+selection_conf_alphas="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+branch_verification_modes="true true true true true true true true true true true true true true true true true true true true true true true true"
+base_branch_competitions="true true true true true true true true true true true true true true true true true true true true true true true true"
+verification_force_base_winners="false false false false false false false false false false false false false false false false false false false false false false false false"
 
 
+
+tasks="gsm8k mbpp"
+nshots="4 3"
+lengths="512 512"
+temperatures="0 0"
+limits="10000 10000"
+block_sizes="32 32"
+block_add_thresholds="0.1 0.1"
+decoded_token_thresholds="0.95 0.95"
+skip_thresholds="0.9 0.9"
+top_ps="none none"
+dtypes="bfloat16 bfloat16"
+sampling_strategies="neg_entropy neg_entropy"
+max_branches_kepts="1 1"
+branching_factors="2 2"
+branch_topps="1 1"
+selection_conf_alphas="0 0"
+branch_verification_modes="true true"
+base_branch_competitions="true true"
+verification_force_base_winners="true true"
 
 tasks="gsm8k mbpp minerva_math"
 nshots="4 3 4"
@@ -56,59 +76,77 @@ top_ps="none none none"
 dtypes="bfloat16 bfloat16 bfloat16"
 sampling_strategies="neg_entropy neg_entropy neg_entropy"
 max_branches_kepts="1 1 1"
-branching_factors="2 2 2"
+branching_factors="14 7 7"
 branch_topps="1 1 1"
 selection_conf_alphas="0 0 0"
 branch_verification_modes="true true true"
 base_branch_competitions="true true true"
-verification_force_base_winners="true true true"
+verification_force_base_winners="false false false"
+# tasks="minerva_math minerva_math minerva_math"
+# nshots="3 3 3"
+# lengths="512 512 512"
+# temperatures="0 0 0"
+# limits="10000 10000 10000"
+# block_sizes="32 32 32"
+# block_add_thresholds="0.9 0.9 0.9"
+# decoded_token_thresholds="0.95 0.95 0.95"
+# skip_thresholds="0.9 0.9 0.9"
+# top_ps="none none none"
+# dtypes="bfloat16 bfloat16 bfloat16"
+# sampling_strategies="neg_entropy neg_entropy neg_entropy"
+# max_branches_kepts="1 1 1"
+# branching_factors="2 3 4"
+# branch_topps="1 1 1"
+# selection_conf_alphas="0 0 0"
+# branch_verification_modes="true true true"
+# base_branch_competitions="true true true"
+# verification_force_base_winners="false false false"
+
+# HumanEval参数配置列表
+humaneval_nshots="0 0 0 0 0 0 0 0 0 0 0 0"  # HumanEval的few-shot数量
+humaneval_lengths="512 512 512 512 512 512 512 512 512 512 512 512"  # HumanEval的生成长度
+humaneval_temperatures="0 0 0 0 0 0 0 0 0 0 0 0"  # HumanEval的温度参数
+humaneval_limits="10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000"  # HumanEval的生成限制
+humaneval_diffusion_steps="512 512 512 512 512 512 512 512 512 512 512 512"  # HumanEval的扩散步数
+humaneval_block_sizes="32 32 32 32 32 32 32 32 32 32 32 32"  # HumanEval的块大小
+humaneval_block_add_thresholds="0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3"  # HumanEval的块添加阈值
+humaneval_decoded_token_thresholds="0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95"  # HumanEval的解码token阈值
+humaneval_skip_thresholds="0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95"  # HumanEval的跳过阈值
+humaneval_top_ps="none none none none none none none none none none none none"  # HumanEval的top_p参数
+humaneval_dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"  # HumanEval的dtype参数
+humaneval_sampling_strategies="neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy"  # HumanEval的采样策略参数
+humaneval_max_branches_kepts="1 1 1 1 1 1 1 1 1 1 1 1"  # HumanEval的保留最大分支数
+humaneval_branching_factors="2 3 4 5 6 7 8 9 10 11 12 13"  # HumanEval的分支因子
+humaneval_branch_topps="1 1 1 1 1 1 1 1 1 1 1 1"  # HumanEval的分支置信度阈值参数
+humaneval_selection_conf_alphas="0 0 0 0 0 0 0 0 0 0 0 0"  # HumanEval的选择置信度权重参数
+humaneval_branch_verification_modes="true true true true true true true true true true true true"  # HumanEval的分支验证模式
+humaneval_base_branch_competitions="true true true true true true true true true true true true"  # HumanEval的基础分支竞争
+humaneval_verification_force_base_winners="false false false false false false false false false false false false"  # HumanEval的验证强制基础分支胜出
 
 
 
-# # HumanEval参数配置列表
-# humaneval_nshots="0 0 0 0 0 0 0 0 0 0 0 0"  # HumanEval的few-shot数量
-# humaneval_lengths="512 512 512 512 512 512 512 512 512 512 512 512"  # HumanEval的生成长度
-# humaneval_temperatures="0 0 0 0 0 0 0 0 0 0 0 0"  # HumanEval的温度参数
-# humaneval_limits="10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000"  # HumanEval的生成限制
-# humaneval_diffusion_steps="512 512 512 512 512 512 512 512 512 512 512 512"  # HumanEval的扩散步数
-# humaneval_block_sizes="16 16 16 16 16 16 16 16 16 16 16 16"  # HumanEval的块大小
-# humaneval_block_add_thresholds="0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3"  # HumanEval的块添加阈值
-# humaneval_decoded_token_thresholds="1 1 1 1 1 1 1 1 1 1 1 1"  # HumanEval的解码token阈值
-# humaneval_skip_thresholds="0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95"  # HumanEval的跳过阈值
-# humaneval_top_ps="none none none none none none none none none none none none"  # HumanEval的top_p参数
-# humaneval_dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"  # HumanEval的dtype参数
-# humaneval_sampling_strategies="neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy"  # HumanEval的采样策略参数
-# humaneval_max_branches_kepts="1 1 1 1 1 1 1 1 1 1 1 1"  # HumanEval的保留最大分支数
-# humaneval_branching_factors="2 3 4 5 6 7 8 9 10 11 12 13"  # HumanEval的分支因子
-# humaneval_branch_topps="1 1 1 1 1 1 1 1 1 1 1 1"  # HumanEval的分支置信度阈值参数
-# humaneval_selection_conf_alphas="0 0 0 0 0 0 0 0 0 0 0 0"  # HumanEval的选择置信度权重参数
-# humaneval_branch_verification_modes="true true true true true true true true true true true true"  # HumanEval的分支验证模式
-# humaneval_base_branch_competitions="true true true true true true true true true true true true"  # HumanEval的基础分支竞争
-# humaneval_verification_force_base_winners="false false false false false false false false false false false false"  # HumanEval的验证强制基础分支胜出
+# HumanEval参数配置列表（去掉前六列）
+humaneval_nshots="0 0 0 0 0 0"  # HumanEval的few-shot数量
+humaneval_lengths="512 512 512 512 512 512"  # HumanEval的生成长度
+humaneval_temperatures="0 0 0 0 0 0"  # HumanEval的温度参数
+humaneval_limits="10000 10000 10000 10000 10000 10000"  # HumanEval的生成限制
+humaneval_diffusion_steps="512 512 512 512 512 512"  # HumanEval的扩散步数
+humaneval_block_sizes="32 32 32 32 32 32"  # HumanEval的块大小
+humaneval_block_add_thresholds="0.3 0.3 0.3 0.3 0.3 0.3"  # HumanEval的块添加阈值
+humaneval_decoded_token_thresholds="0.95 0.95 0.95 0.95 0.95 0.95"  # HumanEval的解码token阈值
+humaneval_skip_thresholds="0.95 0.95 0.95 0.95 0.95 0.95"  # HumanEval的跳过阈值
+humaneval_top_ps="none none none none none none"  # HumanEval的top_p参数
+humaneval_dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"  # HumanEval的dtype参数
+humaneval_sampling_strategies="neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy neg_entropy"  # HumanEval的采样策略参数
+humaneval_max_branches_kepts="1 1 1 1 1 1"  # HumanEval的保留最大分支数
+humaneval_branching_factors="8 9 10 11 12 13"  # HumanEval的分支因子（去掉前六列）
+humaneval_branch_topps="1 1 1 1 1 1"  # HumanEval的分支置信度阈值参数
+humaneval_selection_conf_alphas="0 0 0 0 0 0"  # HumanEval的选择置信度权重参数
+humaneval_branch_verification_modes="true true true true true true"  # HumanEval的分支验证模式
+humaneval_base_branch_competitions="true true true true true true"  # HumanEval的基础分支竞争
+humaneval_verification_force_base_winners="false false false false false false"  # HumanEval的验证强制基础分支胜出
 
-
-
-# # HumanEval参数配置列表（只保留前三列）
-# humaneval_nshots="0 0 0"  # HumanEval的few-shot数量
-# humaneval_lengths="512 512 512"  # HumanEval的生成长度
-# humaneval_temperatures="0 0 0"  # HumanEval的温度参数
-# humaneval_limits="10000 10000 10000"  # HumanEval的生成限制
-# humaneval_diffusion_steps="512 512 512"  # HumanEval的扩散步数
-# humaneval_block_sizes="32 32 32"  # HumanEval的块大小
-# humaneval_block_add_thresholds="0.3 0.3 0.3"  # HumanEval的块添加阈值
-# humaneval_decoded_token_thresholds="0.95 0.95 0.95"  # HumanEval的解码token阈值
-# humaneval_skip_thresholds="0.95 0.95 0.95"  # HumanEval的跳过阈值
-# humaneval_top_ps="none none none"  # HumanEval的top_p参数
-# humaneval_dtypes="bfloat16 bfloat16 bfloat16"  # HumanEval的dtype参数
-# humaneval_sampling_strategies="neg_entropy neg_entropy neg_entropy"  # HumanEval的采样策略参数
-# humaneval_max_branches_kepts="1 1 1"  # HumanEval的保留最大分支数
-# humaneval_branching_factors="5 6 7"  # HumanEval的分支因子
-# humaneval_branch_topps="1 1 1"  # HumanEval的分支置信度阈值参数
-# humaneval_selection_conf_alphas="0 0 0"  # HumanEval的选择置信度权重参数
-# humaneval_branch_verification_modes="true true true"  # HumanEval的分支验证模式
-# humaneval_base_branch_competitions="true true true"  # HumanEval的基础分支竞争
-# humaneval_verification_force_base_winners="false false false"  # HumanEval的验证强制基础分支胜出
-
+# HumanEval参数配置列表（仅保留第一列）
 
 humaneval_nshots="0"
 humaneval_lengths="512"
@@ -116,20 +154,39 @@ humaneval_temperatures="0"
 humaneval_limits="10000"
 humaneval_diffusion_steps="512"
 humaneval_block_sizes="32"
-humaneval_block_add_thresholds="0.1"
+humaneval_block_add_thresholds="0.3"
 humaneval_decoded_token_thresholds="0.95"
-humaneval_skip_thresholds="0.9"
+humaneval_skip_thresholds="0.95"
 humaneval_top_ps="none"
 humaneval_dtypes="bfloat16"
 humaneval_sampling_strategies="neg_entropy"
 humaneval_max_branches_kepts="1"
-humaneval_branching_factors="2"
+humaneval_branching_factors="7"
 humaneval_branch_topps="1"
 humaneval_selection_conf_alphas="0"
 humaneval_branch_verification_modes="true"
 humaneval_base_branch_competitions="true"
-humaneval_verification_force_base_winners="true"
+humaneval_verification_force_base_winners="false"
 
+# humaneval_nshots="0"
+# humaneval_lengths="512"
+# humaneval_temperatures="0"
+# humaneval_limits="10000"
+# humaneval_diffusion_steps="512"
+# humaneval_block_sizes="16"
+# humaneval_block_add_thresholds="0.1"
+# humaneval_decoded_token_thresholds="0.95"
+# humaneval_skip_thresholds="0.9"
+# humaneval_top_ps="none"
+# humaneval_dtypes="bfloat16"
+# humaneval_sampling_strategies="neg_entropy"
+# humaneval_max_branches_kepts="1"
+# humaneval_branching_factors="2"
+# humaneval_branch_topps="1"
+# humaneval_selection_conf_alphas="0"
+# humaneval_branch_verification_modes="true"
+# humaneval_base_branch_competitions="true"
+# humaneval_verification_force_base_winners="true"
 # tasks="mbpp mbpp mbpp mbpp mbpp mbpp"
 # nshots="3 3 3 3 3 3"
 # lengths="512 512 512 512 512 512"  # 生成长度
@@ -352,7 +409,7 @@ for lora_model in "${lora_models[@]}"; do
     
     # HumanEval评估（参数列表遍历）
     for i in "${!HUMANEVAL_NSHOTS_ARRAY[@]}"; do
-        output_path="eval_dream_all_d2f${lora_model_name}/humaneval-ns${HUMANEVAL_NSHOTS_ARRAY[$i]}-len${HUMANEVAL_LENGTHS_ARRAY[$i]}-temp${HUMANEVAL_TEMP_ARRAY[$i]}-limit${HUMANEVAL_LIMITS_ARRAY[$i]}-diffsteps${HUMANEVAL_DIFFUSION_STEPS_ARRAY[$i]}-block${HUMANEVAL_BLOCK_SIZES_ARRAY[$i]}-thresh${HUMANEVAL_BLOCK_ADD_THRESHOLDS_ARRAY[$i]}-decodethresh${HUMANEVAL_DECODED_TOKEN_THRESHOLDS_ARRAY[$i]}-skip${HUMANEVAL_SKIP_THRESHOLDS_ARRAY[$i]}-topp${HUMANEVAL_TOP_PS_ARRAY[$i]}-dtype${HUMANEVAL_DTYPES_ARRAY[$i]}-sampling${HUMANEVAL_SAMPLING_STRATEGIES_ARRAY[$i]}-maxbranch${HUMANEVAL_MAX_BRANCHES_KEPTS_ARRAY[$i]}-branchfactor${HUMANEVAL_BRANCHING_FACTORS_ARRAY[$i]}-branchtopp${HUMANEVAL_BRANCH_TOPPS_ARRAY[$i]}-selconfal${HUMANEVAL_SELECTION_CONF_ALPHAS_ARRAY[$i]}-branchverify${HUMANEVAL_BRANCH_VERIFICATION_MODES_ARRAY[$i]}-basecompete${HUMANEVAL_BASE_BRANCH_COMPETITIONS_ARRAY[$i]}-forcebase${HUMANEVAL_VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]}"
+        output_path="results/eval_dream_all_new${lora_model_name}/humaneval-ns${HUMANEVAL_NSHOTS_ARRAY[$i]}-len${HUMANEVAL_LENGTHS_ARRAY[$i]}-temp${HUMANEVAL_TEMP_ARRAY[$i]}-limit${HUMANEVAL_LIMITS_ARRAY[$i]}-diffsteps${HUMANEVAL_DIFFUSION_STEPS_ARRAY[$i]}-block${HUMANEVAL_BLOCK_SIZES_ARRAY[$i]}-thresh${HUMANEVAL_BLOCK_ADD_THRESHOLDS_ARRAY[$i]}-decodethresh${HUMANEVAL_DECODED_TOKEN_THRESHOLDS_ARRAY[$i]}-skip${HUMANEVAL_SKIP_THRESHOLDS_ARRAY[$i]}-topp${HUMANEVAL_TOP_PS_ARRAY[$i]}-dtype${HUMANEVAL_DTYPES_ARRAY[$i]}-sampling${HUMANEVAL_SAMPLING_STRATEGIES_ARRAY[$i]}-maxbranch${HUMANEVAL_MAX_BRANCHES_KEPTS_ARRAY[$i]}-branchfactor${HUMANEVAL_BRANCHING_FACTORS_ARRAY[$i]}-branchtopp${HUMANEVAL_BRANCH_TOPPS_ARRAY[$i]}-selconfal${HUMANEVAL_SELECTION_CONF_ALPHAS_ARRAY[$i]}-branchverify${HUMANEVAL_BRANCH_VERIFICATION_MODES_ARRAY[$i]}-basecompete${HUMANEVAL_BASE_BRANCH_COMPETITIONS_ARRAY[$i]}-forcebase${HUMANEVAL_VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]}"
         echo "Running HumanEval evaluation $((i+1))/${humaneval_array_length} for $lora_model_name..."
         echo "HumanEval Config: Shots: ${HUMANEVAL_NSHOTS_ARRAY[$i]}, Length: ${HUMANEVAL_LENGTHS_ARRAY[$i]}, Temperature: ${HUMANEVAL_TEMP_ARRAY[$i]}, Limit: ${HUMANEVAL_LIMITS_ARRAY[$i]}, Diffusion Steps: ${HUMANEVAL_DIFFUSION_STEPS_ARRAY[$i]}, Block Size: ${HUMANEVAL_BLOCK_SIZES_ARRAY[$i]}, Block Add Threshold: ${HUMANEVAL_BLOCK_ADD_THRESHOLDS_ARRAY[$i]}, Decoded Token Threshold: ${HUMANEVAL_DECODED_TOKEN_THRESHOLDS_ARRAY[$i]}, Skip Threshold: ${HUMANEVAL_SKIP_THRESHOLDS_ARRAY[$i]}, Top_p: ${HUMANEVAL_TOP_PS_ARRAY[$i]}, Sampling Strategy: ${HUMANEVAL_SAMPLING_STRATEGIES_ARRAY[$i]}, Dtype: ${HUMANEVAL_DTYPES_ARRAY[$i]}, Max Branches: ${HUMANEVAL_MAX_BRANCHES_KEPTS_ARRAY[$i]}, Branching Factor: ${HUMANEVAL_BRANCHING_FACTORS_ARRAY[$i]}, Branch Topp: ${HUMANEVAL_BRANCH_TOPPS_ARRAY[$i]}, Selection Conf Alpha: ${HUMANEVAL_SELECTION_CONF_ALPHAS_ARRAY[$i]}, Branch Verification: ${HUMANEVAL_BRANCH_VERIFICATION_MODES_ARRAY[$i]}, Base Competition: ${HUMANEVAL_BASE_BRANCH_COMPETITIONS_ARRAY[$i]}, Force Base Winner: ${HUMANEVAL_VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]}; Output: $output_path"
         
@@ -363,7 +420,7 @@ for lora_model in "${lora_models[@]}"; do
             humaneval_model_args="pretrained=${base_model},lora_path=${lora_model},max_new_tokens=${HUMANEVAL_LENGTHS_ARRAY[$i]},diffusion_steps=${HUMANEVAL_DIFFUSION_STEPS_ARRAY[$i]},temperature=${HUMANEVAL_TEMP_ARRAY[$i]},top_p=${HUMANEVAL_TOP_PS_ARRAY[$i]},add_bos_token=true,escape_until=true,block_size=${HUMANEVAL_BLOCK_SIZES_ARRAY[$i]},block_add_threshold=${HUMANEVAL_BLOCK_ADD_THRESHOLDS_ARRAY[$i]},skip_threshold=${HUMANEVAL_SKIP_THRESHOLDS_ARRAY[$i]},decoded_token_threshold=${HUMANEVAL_DECODED_TOKEN_THRESHOLDS_ARRAY[$i]},dtype=${HUMANEVAL_DTYPES_ARRAY[$i]},sampling_strategy=${HUMANEVAL_SAMPLING_STRATEGIES_ARRAY[$i]},max_branches_kept=${HUMANEVAL_MAX_BRANCHES_KEPTS_ARRAY[$i]},branching_factor=${HUMANEVAL_BRANCHING_FACTORS_ARRAY[$i]},branch_topp=${HUMANEVAL_BRANCH_TOPPS_ARRAY[$i]},selection_conf_alpha=${HUMANEVAL_SELECTION_CONF_ALPHAS_ARRAY[$i]},branch_verification_mode=${HUMANEVAL_BRANCH_VERIFICATION_MODES_ARRAY[$i]},base_branch_competition=${HUMANEVAL_BASE_BRANCH_COMPETITIONS_ARRAY[$i]},verification_force_base_winner=${HUMANEVAL_VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]},save_dir=${output_path}"
         fi
 
-        HF_ENDPOINT=https://hf-mirror.com CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29520 --num_processes 8 eval_dream_xck_true_casual.py --model dream_lora_spec \
+        HF_ENDPOINT=https://hf-mirror.com CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29520 --num_processes 8 eval_dream_xck_truenew.py --model dream_lora_spec \
             --model_args $humaneval_model_args \
             --tasks humaneval \
             --num_fewshot ${HUMANEVAL_NSHOTS_ARRAY[$i]} \
@@ -376,7 +433,7 @@ for lora_model in "${lora_models[@]}"; do
     # 其他任务的评估
     for i in "${!TASKS_ARRAY[@]}"; do
         # Create comprehensive output path with all hyperparameters including LoRA-specific info and multi-branch params
-        output_path="eval_dream_all_d2f_full${lora_model_name}/${TASKS_ARRAY[$i]}-ns${NSHOTS_ARRAY[$i]}-len${LENGTH_ARRAY[$i]}-temp${TEMP_ARRAY[$i]}-limit${LIMITS_ARRAY[$i]}-diffsteps${LENGTH_ARRAY[$i]}-block${BLOCK_SIZES_ARRAY[$i]}-thresh${BLOCK_ADD_THRESHOLDS_ARRAY[$i]}-decodethresh${DECODED_TOKEN_THRESHOLDS_ARRAY[$i]}-skip${SKIP_THRESHOLDS_ARRAY[$i]}-topp${TOP_PS_ARRAY[$i]}-dtype${DTYPES_ARRAY[$i]}-sampling${SAMPLING_STRATEGIES_ARRAY[$i]}-maxbranch${MAX_BRANCHES_KEPTS_ARRAY[$i]}-branchfactor${BRANCHING_FACTORS_ARRAY[$i]}-branchtopp${BRANCH_TOPPS_ARRAY[$i]}-selconfal${SELECTION_CONF_ALPHAS_ARRAY[$i]}-branchverify${BRANCH_VERIFICATION_MODES_ARRAY[$i]}-basecompete${BASE_BRANCH_COMPETITIONS_ARRAY[$i]}-forcebase${VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]}"
+        output_path="results/eval_dream_all_new${lora_model_name}/${TASKS_ARRAY[$i]}-ns${NSHOTS_ARRAY[$i]}-len${LENGTH_ARRAY[$i]}-temp${TEMP_ARRAY[$i]}-limit${LIMITS_ARRAY[$i]}-diffsteps${LENGTH_ARRAY[$i]}-block${BLOCK_SIZES_ARRAY[$i]}-thresh${BLOCK_ADD_THRESHOLDS_ARRAY[$i]}-decodethresh${DECODED_TOKEN_THRESHOLDS_ARRAY[$i]}-skip${SKIP_THRESHOLDS_ARRAY[$i]}-topp${TOP_PS_ARRAY[$i]}-dtype${DTYPES_ARRAY[$i]}-sampling${SAMPLING_STRATEGIES_ARRAY[$i]}-maxbranch${MAX_BRANCHES_KEPTS_ARRAY[$i]}-branchfactor${BRANCHING_FACTORS_ARRAY[$i]}-branchtopp${BRANCH_TOPPS_ARRAY[$i]}-selconfal${SELECTION_CONF_ALPHAS_ARRAY[$i]}-branchverify${BRANCH_VERIFICATION_MODES_ARRAY[$i]}-basecompete${BASE_BRANCH_COMPETITIONS_ARRAY[$i]}-forcebase${VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]}"
         echo "Task: ${TASKS_ARRAY[$i]}, Shots: ${NSHOTS_ARRAY[$i]}, Length: ${LENGTH_ARRAY[$i]}, Temperature: ${TEMP_ARRAY[$i]}, Limit: ${LIMITS_ARRAY[$i]}, Block Size: ${BLOCK_SIZES_ARRAY[$i]}, Block Add Threshold: ${BLOCK_ADD_THRESHOLDS_ARRAY[$i]}, Decoded Token Threshold: ${DECODED_TOKEN_THRESHOLDS_ARRAY[$i]}, Skip Threshold: ${SKIP_THRESHOLDS_ARRAY[$i]}, Top_p: ${TOP_PS_ARRAY[$i]}, Sampling Strategy: ${SAMPLING_STRATEGIES_ARRAY[$i]}, Dtype: ${DTYPES_ARRAY[$i]}, Max Branches: ${MAX_BRANCHES_KEPTS_ARRAY[$i]}, Branching Factor: ${BRANCHING_FACTORS_ARRAY[$i]}, Branch Topp: ${BRANCH_TOPPS_ARRAY[$i]}, Selection Conf Alpha: ${SELECTION_CONF_ALPHAS_ARRAY[$i]}, Branch Verification: ${BRANCH_VERIFICATION_MODES_ARRAY[$i]}, Base Competition: ${BASE_BRANCH_COMPETITIONS_ARRAY[$i]}, Force Base Winner: ${VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]}; Output: $output_path"
         
         # 构建model_args，根据top_p是否为none来决定是否包含top_p参数，并添加多分支参数
@@ -386,17 +443,17 @@ for lora_model in "${lora_models[@]}"; do
             model_args="pretrained=${base_model},lora_path=${lora_model},max_new_tokens=${LENGTH_ARRAY[$i]},diffusion_steps=${LENGTH_ARRAY[$i]},add_bos_token=true,temperature=${TEMP_ARRAY[$i]},top_p=${TOP_PS_ARRAY[$i]},block_size=${BLOCK_SIZES_ARRAY[$i]},block_add_threshold=${BLOCK_ADD_THRESHOLDS_ARRAY[$i]},skip_threshold=${SKIP_THRESHOLDS_ARRAY[$i]},decoded_token_threshold=${DECODED_TOKEN_THRESHOLDS_ARRAY[$i]},dtype=${DTYPES_ARRAY[$i]},sampling_strategy=${SAMPLING_STRATEGIES_ARRAY[$i]},max_branches_kept=${MAX_BRANCHES_KEPTS_ARRAY[$i]},branching_factor=${BRANCHING_FACTORS_ARRAY[$i]},branch_topp=${BRANCH_TOPPS_ARRAY[$i]},selection_conf_alpha=${SELECTION_CONF_ALPHAS_ARRAY[$i]},branch_verification_mode=${BRANCH_VERIFICATION_MODES_ARRAY[$i]},base_branch_competition=${BASE_BRANCH_COMPETITIONS_ARRAY[$i]},verification_force_base_winner=${VERIFICATION_FORCE_BASE_WINNERS_ARRAY[$i]},save_dir=${output_path}"
         fi
 
-        # HF_ENDPOINT=https://hf-mirror.com CUDA_VISIBLE_DEVICES=2,4,5,6 accelerate launch --main_process_port 29520 --num_processes 4 eval_dream_xck_true.py --model dream_lora_spec \
-        #     --model_args $model_args \
-        #     --tasks ${TASKS_ARRAY[$i]} \
-        #     --limit ${LIMITS_ARRAY[$i]} \
-        #     --num_fewshot ${NSHOTS_ARRAY[$i]} \
-        #     --batch_size 1 \
-        #     --output_path $output_path \
-        #     --log_samples \
-        #     --confirm_run_unsafe_code \
-        #     --apply_chat_template \
-        #     --fewshot_as_multiturn
+        HF_ENDPOINT=https://hf-mirror.com CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29520 --num_processes 8 eval_dream_xck_truenew.py --model dream_lora_spec \
+            --model_args $model_args \
+            --tasks ${TASKS_ARRAY[$i]} \
+            --limit ${LIMITS_ARRAY[$i]} \
+            --num_fewshot ${NSHOTS_ARRAY[$i]} \
+            --batch_size 1 \
+            --output_path $output_path \
+            --log_samples \
+            --confirm_run_unsafe_code \
+            --apply_chat_template \
+            --fewshot_as_multiturn
     done
 done
 
