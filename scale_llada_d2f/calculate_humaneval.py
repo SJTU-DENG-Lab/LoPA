@@ -13,7 +13,7 @@ from pathlib import Path
 # os.environ["https_proxy"] = "http://proxy-node:7890"
 # os.environ["http_proxy"] = "http://proxy-node:7890"
 # os.environ["all_proxy"] = "socks5://proxy-node:7890"
-# os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 
 def find_humaneval_files(root_dir):
     """
@@ -80,8 +80,8 @@ def process_file(jsonl_file, postprocess_script):
 
 def main():
     # 配置路径
-    root_dir = "/home/chenkai/data/LoPA/scale_dream_d2f/eval_dream_all"
-    postprocess_script = "/home/chenkai/data/D2F_2_xck/postprocess_code.py"
+    root_dir = "/mnt/rl/xinyi/LoPA/scale_llada_d2f/results"
+    postprocess_script = "/mnt/rl/xinyi/LoPA/scale_llada_d2f/postprocess_code.py"
     
     print(f"搜索目录: {root_dir}")
     print(f"后处理脚本: {postprocess_script}")

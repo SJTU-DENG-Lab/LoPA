@@ -309,6 +309,7 @@ export HF_ALLOW_CODE_EVAL=1
 export CURL_CA_BUNDLE=""
 export REQUESTS_CA_BUNDLE=""
 export HF_ENDPOINT="https://hf-mirror.com"
+export HF_HOME="/mnt/rl/xinyi/LoPA"
 
 
 # 对每个LoRA模型进行评测

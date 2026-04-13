@@ -246,6 +246,7 @@ export HF_ALLOW_CODE_EVAL=1
 export CURL_CA_BUNDLE=""
 export REQUESTS_CA_BUNDLE=""
 export HF_ENDPOINT="https://hf-mirror.com"
+export HF_HOME="/mnt/rl/xinyi/LoPA"
 # 对每个LoRA模型进行评测
 for lora_model in "${lora_models[@]}"; do
 # 获取LoRA模型的基本名称用于输出目录
