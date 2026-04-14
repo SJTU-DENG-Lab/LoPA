@@ -1,7 +1,6 @@
 *.pyc
 __pycache__/
 .sii/
-cache/
 log/
 scale_llada_d2f/results/
 scale_dream_d2f/results/
