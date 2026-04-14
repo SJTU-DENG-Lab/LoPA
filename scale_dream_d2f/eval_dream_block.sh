@@ -31,7 +31,7 @@ dtypes="bfloat16 bfloat16 bfloat16"
 # limits="10000"
 # dtypes="bfloat16"
 
-model=/home/chenkai/data/models/Dream-v0-Instruct-7B
+model=/mnt/rl/xinyi/models/Dream-v0-Instruct-7B
 # Create arrays from space-separated strings
 read -ra TASKS_ARRAY <<< "$tasks"
 read -ra NSHOTS_ARRAY <<< "$nshots"
@@ -50,6 +50,11 @@ if [[ ${#TASKS_ARRAY[@]} != ${#NSHOTS_ARRAY[@]} || ${#TASKS_ARRAY[@]} != ${#LENG
 fi
 
 export HF_ALLOW_CODE_EVAL=1
+export CURL_CA_BUNDLE=""
+export REQUESTS_CA_BUNDLE=""
+export HF_ENDPOINT="https://hf-mirror.com"
+export HF_HOME="/mnt/rl/xinyi/LoPA"
+
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29510 --num_processes 8 eval_dream_block_visualnew.py --model dream \
     --model_args pretrained=${model},max_new_tokens=512,diffusion_steps=512,temperature=0.2,top_p=0.95,add_bos_token=true,escape_until=true,dtype=${DTYPES_ARRAY[0]},save_dir=${output_path} \
     --tasks humaneval \

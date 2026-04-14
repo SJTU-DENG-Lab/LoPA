@@ -82,6 +82,7 @@ selection_conf_alphas="0 0 0"
 branch_verification_modes="true true true"
 base_branch_competitions="true true true"
 verification_force_base_winners="false false false"
+
 # tasks="minerva_math minerva_math minerva_math"
 # nshots="3 3 3"
 # lengths="512 512 512"
@@ -213,13 +214,13 @@ humaneval_verification_force_base_winners="false"
 # sampling_strategies="default"  # 采样策略参数
 
 # 基础模型路径
-base_model=/home/chenkai/data/models/Dream-v0-Instruct-7B
+base_model=/mnt/rl/xinyi/models/Dream-v0-Instruct-7B
 # 基础模型路径
 # base_model=/data1/ckpts/Dream-org/Dream-v0-Base-7B
 # 多个LoRA模型路径，用空格分隔
 lora_models=(
     # "/data1/ckpts/SJTU-Deng-Lab/D2F_Dream_Base_7B_Lora"
-    "/home/chenkai/data/ckpt/wx_dream-new/Decoder-ddt_test-20k"
+    "/mnt/rl/xinyi/models/D2F_Dream_Instruct_7B_Lora"
     # "/data1/xck/ckpt/wx_llada_new/Decoder-ddt_test-15k"
     # "/data1/xck/ckpt/wx_llada_new/Decoder-ddt_test-5k"
 )
@@ -399,6 +400,10 @@ elif [[ $humaneval_multibranch_array_length -ne $humaneval_array_length ]]; then
 fi
 
 export HF_ALLOW_CODE_EVAL=1
+export CURL_CA_BUNDLE=""
+export REQUESTS_CA_BUNDLE=""
+export HF_ENDPOINT="https://hf-mirror.com"
+export HF_HOME="/mnt/rl/xinyi/LoPA"
 # 对每个LoRA模型进行评测
 for lora_model in "${lora_models[@]}"; do
     # 获取LoRA模型的基本名称用于输出目录
