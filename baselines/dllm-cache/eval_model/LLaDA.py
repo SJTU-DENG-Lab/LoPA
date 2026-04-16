@@ -775,28 +775,31 @@ class LLaDA(TemplateLM):
 
     def loglikelihood(self, requests):
         raise NotImplementedError
-    def _count_tokens_after_truncation(self, response_text: str, until_terms: List[str] = None) -> int:
-        """
-        统一的token计算函数：对回答进行截断后计算非126081的token数量
-        """
-        # Apply truncation based on until parameters
-        truncated_text = response_text
-        if until_terms and not self.escape_until:
-            for term in until_terms:
-                if len(term) > 0:
-                    truncated_text = truncated_text.split(term)[0]
-        
-        # Re-tokenize processed answer and count non-126081 tokens
-        generated_answer_ids = torch.tensor(self.tokenizer(truncated_text)["input_ids"])
-        return int((generated_answer_ids != 126081).sum())
+    def _compute_generation_token_stats(
+        self,
+        generated_ids: Union[torch.Tensor, List[int]],
+        generated_length: Optional[int],
+    ) -> Tuple[List[int], int, int]:
+        if isinstance(generated_ids, torch.Tensor):
+            generated_ids = generated_ids.tolist()
+
+        actual_ids = list(generated_ids)
+        eos_token_id = self.tokenizer.eos_token_id
+        if eos_token_id is not None and eos_token_id in actual_ids:
+            actual_ids = actual_ids[: actual_ids.index(eos_token_id)]
+
+        actual_tokens_excluding_eos = len(actual_ids)
+        generated_tokens_including_eos = (
+            int(generated_length) if generated_length is not None else len(generated_ids)
+        )
+        return actual_ids, actual_tokens_excluding_eos, generated_tokens_including_eos
 
     def generate_until(self, requests: List[Instance]) -> List[str]:
         res = []
         start_time = time.time()
-        
-        # 统计变量
-        num_tokens = 0
-        num_nfe = 0
+        total_generated_tokens_including_eos = 0
+        total_actual_tokens_excluding_eos = 0
+        total_steps = 0
         
         bar = tqdm(total=len(requests), disable=(self.rank != 0), desc="Running generate_until requests")
         ds = [{"text": req.args[0]} for req in requests]
@@ -830,52 +833,67 @@ class LLaDA(TemplateLM):
             )
             cont_toks_list = self.tokenizer.batch_decode(out, skip_special_tokens=True)
             
+            generated_length = gen_kwargs.get("gen_length")
+            steps_taken = int(gen_kwargs.get("steps", 0) or 0)
+
             for j, s in enumerate(cont_toks_list):
-                # 使用统一的token计算函数
-                if self.show_speed:
-                    num_tokens += self._count_tokens_after_truncation(s, gen_kwargs.get("until", []))
-                    # NFE固定为1（LLaDA模型的简化统计）
-                    num_nfe += 1
-                
-                # 进行截断处理
+                _, actual_tokens_excluding_eos, generated_tokens_including_eos = (
+                    self._compute_generation_token_stats(out[j], generated_length)
+                )
+                total_actual_tokens_excluding_eos += actual_tokens_excluding_eos
+                total_generated_tokens_including_eos += generated_tokens_including_eos
+                total_steps += steps_taken
+
                 if not self.escape_until:
                     for term in gen_kwargs.get("until", []):
                         if len(term) > 0:
                             s = s.split(term)[0]
-                
+
                 res.append(s)
                 bar.update(1)
         
         bar.close()
         
-        # 只在最后保存统计结果
         if self.save_dir is not None:
             os.makedirs(self.save_dir, exist_ok=True)
-            final_time = time.time()
-            total_time = final_time - start_time
-            
+            total_time = time.time() - start_time
             final_stats = {
                 "processed_samples": len(res),
-                "total_samples": len(requests), 
-                "total_tokens": int(num_tokens),
-                "total_nfe": int(num_nfe),
+                "total_samples": len(requests),
+                "total_generated_tokens_including_eos": int(total_generated_tokens_including_eos),
+                "total_actual_tokens_excluding_eos": int(total_actual_tokens_excluding_eos),
+                "total_parallel_steps": int(total_steps),
                 "total_time": total_time,
-                "tokens_per_second": float(num_tokens) / total_time if total_time > 0 else 0.0,
-                "nfe_per_token": float(num_nfe) / float(num_tokens) if num_tokens > 0 else 0.0,
-                "timestamp": final_time
+                "generated_tokens_including_eos_per_second": float(total_generated_tokens_including_eos) / total_time if total_time > 0 else 0.0,
+                "actual_tokens_excluding_eos_per_second": float(total_actual_tokens_excluding_eos) / total_time if total_time > 0 else 0.0,
+                "generated_tokens_including_eos_per_step": float(total_generated_tokens_including_eos) / float(total_steps) if total_steps > 0 else 0.0,
+                "actual_tokens_excluding_eos_per_step": float(total_actual_tokens_excluding_eos) / float(total_steps) if total_steps > 0 else 0.0,
+                "timestamp": time.time(),
+                "rank": self.rank,
+                "world_size": self.world_size,
             }
-            final_stats_path = os.path.join(self.save_dir, f'rank_{self.rank}_final_stats.json')
+            final_stats_path = os.path.join(self.save_dir, f'rank_{self.rank}_stats.json')
             with open(final_stats_path, 'w', encoding='utf-8') as f:
                 json.dump(final_stats, f, ensure_ascii=False, indent=2)
         
-        if self.show_speed:
-            final_time = time.time()
-            total_time = final_time - start_time
-            print(f"\n=== 最终统计结果 ===")
-            print(f"处理样本数: {len(res)}")
-            print(f"总token数: {num_tokens}")
-            print(f"总时间: {total_time:.2f}秒")
-            print(f"吞吐量: {num_tokens / total_time:.2f} tokens/s")
+        if self.show_speed and len(res) > 0:
+            total_time = time.time() - start_time
+            avg_tokens = total_generated_tokens_including_eos / len(res)
+            avg_steps = total_steps / len(res)
+            avg_tok_per_step = total_generated_tokens_including_eos / total_steps if total_steps > 0 else 0
+
+            print(f"\n==================== FINAL SUMMARY (Single-Branch, Corrected Stats) ====================")
+            print(f"  - Total Samples Processed: {len(res)}")
+            print(f"  - Total Generated Tokens Including EOS (sum of best paths): {total_generated_tokens_including_eos}")
+            print(f"  - Total Actual Tokens Excluding EOS (sum of best paths): {total_actual_tokens_excluding_eos}")
+            print(f"  - Total Steps (sum of best paths): {total_steps}")
+            print(f"  - Total Time: {total_time:.2f} seconds")
+            print("--------------------------------------------------------------------")
+            print(f"  - Average Tokens per Sample (best path): {avg_tokens:.2f}")
+            print(f"  - Average Steps per Sample (best path): {avg_steps:.2f}")
+            print(f"  - Overall Effective Tokens/Step Ratio: {avg_tok_per_step:.2f}")
+            print(f"  - Overall Throughput (Generated Tokens/Sec): {total_generated_tokens_including_eos / total_time:.2f}")
+            print("==================================================================================\n")
         
         return res
     

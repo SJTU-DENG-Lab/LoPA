@@ -1,21 +1,37 @@
 #!/bin/bash
 # filepath: /home/chenkai/data/Dream/eval/eval_dream_lora_para.sh
 
-tasks="gsm8k gsm8k gsm8k gsm8k mbpp mbpp mbpp mbpp minerva_math minerva_math minerva_math minerva_math"
-nshots="4 4 4 4 3 3 3 3 4 4 4 4"
-lengths="256 256 256 256 512 512 512 512 256 256 256 256"
-temperatures="0 0 0 0 0 0 0 0 0 0 0 0"
-limits="10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000"
-block_sizes="32 32 32 32 32 32 32 32 32 32 32 32"
-skip_thresholds="0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9"
-top_ps="none none none none none none none none none none none none"
-dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"
-sampling_strategies="default default default default default default default default default default default default"
-branching_factors="2 2 3 4 2 2 3 4 2 2 3 4"
-branch_topps="1 1 1 1 1 1 1 1 1 1 1 1"
-selection_conf_alphas="0 0 0 0 0 0 0 0 0 0 0 0"
-base_branch_competitions="true true true true true true true true true true true true"
-verification_force_base_winners="false true false false false true false false false true false false"
+# tasks="gsm8k gsm8k gsm8k gsm8k mbpp mbpp mbpp mbpp minerva_math minerva_math minerva_math minerva_math"
+# nshots="4 4 4 4 3 3 3 3 4 4 4 4"
+# lengths="256 256 256 256 512 512 512 512 256 256 256 256"
+# temperatures="0 0 0 0 0 0 0 0 0 0 0 0"
+# limits="10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000"
+# block_sizes="32 32 32 32 32 32 32 32 32 32 32 32"
+# skip_thresholds="0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9"
+# top_ps="none none none none none none none none none none none none"
+# dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"
+# sampling_strategies="default default default default default default default default default default default default"
+# branching_factors="2 2 3 4 2 2 3 4 2 2 3 4"
+# branch_topps="1 1 1 1 1 1 1 1 1 1 1 1"
+# selection_conf_alphas="0 0 0 0 0 0 0 0 0 0 0 0"
+# base_branch_competitions="true true true true true true true true true true true true"
+# verification_force_base_winners="false true false false false true false false false true false false"
+
+tasks="gsm8k gsm8k gsm8k gsm8k gsm8k gsm8k mbpp mbpp mbpp mbpp mbpp mbpp minerva_math minerva_math minerva_math minerva_math minerva_math minerva_math"
+nshots="4 4 4 4 4 4 3 3 3 3 3 3 4 4 4 4 4 4"
+lengths="256 256 256 256 256 256 512 512 512 512 512 512 256 256 256 256 256 256"
+temperatures="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+limits="10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000"
+block_sizes="32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32"
+skip_thresholds="0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9 0.9"
+top_ps="none none none none none none none none none none none none none none none none none none"
+dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"
+sampling_strategies="default default default default default default default default default default default default default default default default default default"
+branching_factors="4 5 6 7 8 9 4 5 6 7 8 9 4 5 6 7 8 9"
+branch_topps="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"
+selection_conf_alphas="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+base_branch_competitions="true true true true true true true true true true true true true true true true true true"
+verification_force_base_winners="false false false false false false false false false false false false false false false false false false"
 
 # tasks="gsm8k gsm8k gsm8k"
 # nshots="4 4 4"
@@ -49,21 +65,37 @@ verification_force_base_winners="false true false false false true false false f
 # base_branch_competitions="true"
 # verification_force_base_winners="false"
 
+# # HumanEval参数配置列表
+# humaneval_nshots="0 0 0 0"  # HumanEval的few-shot数量
+# humaneval_lengths="512 512 512 512"  # HumanEval的生成长度
+# humaneval_temperatures="0 0 0 0"  # HumanEval的温度参数
+# humaneval_limits="10000 10000 10000 10000"  # HumanEval的生成限制
+# humaneval_block_sizes="32 32 32 32"  # HumanEval的块大小
+# humaneval_skip_thresholds="0.9 0.9 0.9 0.9"  # HumanEval的跳过阈值
+# humaneval_top_ps="none none none none"  # HumanEval的top_p参数
+# humaneval_dtypes="bfloat16 bfloat16 bfloat16 bfloat16"  # HumanEval的dtype参数
+# humaneval_sampling_strategies="default default default default"  # HumanEval的采样策略参数
+# humaneval_branching_factors="2 2 3 4"  # HumanEval的分支因子
+# humaneval_branch_topps="1 1 1 1"  # HumanEval的分支置信度阈值参数
+# humaneval_selection_conf_alphas="0 0 0 0"  # HumanEval的选择置信度权重参数
+# humaneval_base_branch_competitions="true true true true"  # HumanEval的基础分支竞争
+# humaneval_verification_force_base_winners="true false false false"  # HumanEval的验证强制基础分支胜出
+
 # HumanEval参数配置列表
-humaneval_nshots="0 0 0 0"  # HumanEval的few-shot数量
-humaneval_lengths="512 512 512 512"  # HumanEval的生成长度
-humaneval_temperatures="0 0 0 0"  # HumanEval的温度参数
-humaneval_limits="10000 10000 10000 10000"  # HumanEval的生成限制
-humaneval_block_sizes="32 32 32 32"  # HumanEval的块大小
-humaneval_skip_thresholds="0.9 0.9 0.9 0.9"  # HumanEval的跳过阈值
-humaneval_top_ps="none none none none"  # HumanEval的top_p参数
-humaneval_dtypes="bfloat16 bfloat16 bfloat16 bfloat16"  # HumanEval的dtype参数
-humaneval_sampling_strategies="default default default default"  # HumanEval的采样策略参数
-humaneval_branching_factors="2 2 3 4"  # HumanEval的分支因子
-humaneval_branch_topps="1 1 1 1"  # HumanEval的分支置信度阈值参数
-humaneval_selection_conf_alphas="0 0 0 0"  # HumanEval的选择置信度权重参数
-humaneval_base_branch_competitions="true true true true"  # HumanEval的基础分支竞争
-humaneval_verification_force_base_winners="true false false false"  # HumanEval的验证强制基础分支胜出
+humaneval_nshots="0 0 0 0 0 0"  # HumanEval的few-shot数量
+humaneval_lengths="512 512 512 512 512 512"  # HumanEval的生成长度
+humaneval_temperatures="0 0 0 0 0 0"  # HumanEval的温度参数
+humaneval_limits="10000 10000 10000 10000 10000 10000"  # HumanEval的生成限制
+humaneval_block_sizes="32 32 32 32 32 32"  # HumanEval的块大小
+humaneval_skip_thresholds="0.9 0.9 0.9 0.9 0.9 0.9"  # HumanEval的跳过阈值
+humaneval_top_ps="none none none none none none"  # HumanEval的top_p参数
+humaneval_dtypes="bfloat16 bfloat16 bfloat16 bfloat16 bfloat16 bfloat16"  # HumanEval的dtype参数
+humaneval_sampling_strategies="default default default default default default"  # HumanEval的采样策略参数
+humaneval_branching_factors="4 5 6 7 8 9"  # HumanEval的分支因子
+humaneval_branch_topps="1 1 1 1 1 1"  # HumanEval的分支置信度阈值参数
+humaneval_selection_conf_alphas="0 0 0 0 0 0"  # HumanEval的选择置信度权重参数
+humaneval_base_branch_competitions="true true true true true true"  # HumanEval的基础分支竞争
+humaneval_verification_force_base_winners="false false false false false false"  # HumanEval的
 
 
 # tasks="mbpp mbpp mbpp mbpp mbpp mbpp"

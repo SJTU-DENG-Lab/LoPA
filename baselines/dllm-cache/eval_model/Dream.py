@@ -313,21 +313,28 @@ class Dream(LM):
     def loglikelihood_rolling(self, requests: List[Instance]) -> List[float]:
         raise NotImplementedError
 
-    def _count_non_eos_tokens_before_truncation(self, generated_sequence, prompt_length):
-        """
-        统一的token计算函数：计算生成序列中非EOS的token数量（截断前）
-        """
-        # 获取生成的部分（去掉prompt）
-        generated_tokens = generated_sequence[prompt_length:]
-        # 计算非EOS token数量
-        eos_token_id = self.tokenizer.eos_token_id
-        if eos_token_id is not None:
-            non_eos_count = (generated_tokens != eos_token_id).sum().item()
-        else:
-            non_eos_count = len(generated_tokens)
-        return non_eos_count
+    def _compute_generation_token_stats(
+        self,
+        generated_sequence: Union[torch.Tensor, List[int]],
+        prompt_length: int,
+        generated_length: Optional[int],
+    ) -> Tuple[List[int], int, int]:
+        if isinstance(generated_sequence, torch.Tensor):
+            generated_sequence = generated_sequence.tolist()
 
-    def _generate_batch(self, prompts: List[str]) -> List[str]:
+        generated_ids = list(generated_sequence[prompt_length:])
+        actual_ids = generated_ids
+        eos_token_id = self.tokenizer.eos_token_id
+        if eos_token_id is not None and eos_token_id in actual_ids:
+            actual_ids = actual_ids[: actual_ids.index(eos_token_id)]
+
+        actual_tokens_excluding_eos = len(actual_ids)
+        generated_tokens_including_eos = (
+            int(generated_length) if generated_length is not None else len(generated_ids)
+        )
+        return actual_ids, actual_tokens_excluding_eos, generated_tokens_including_eos
+
+    def _generate_batch(self, prompts: List[str]) -> Tuple[List[str], List[Dict[str, int]]]:
         if self.add_bos_token:
             prompts = [self.tokenizer.bos_token + p for p in prompts]
         # tokenize
@@ -359,13 +366,22 @@ class Dream(LM):
             alg_temp=self.alg_temp,
         )
 
-        # 使用统一的token计算函数
-        if not hasattr(self, 'total_generated_tokens'):
-            self.total_generated_tokens = 0
-        non_eos_tokens = self._count_non_eos_tokens_before_truncation(
-            generation_ids.sequences[0], prompt_ids.shape[1]
-        )
-        self.total_generated_tokens += non_eos_tokens
+        sample_stats = []
+        for sequence in generation_ids.sequences:
+            _, actual_tokens_excluding_eos, generated_tokens_including_eos = (
+                self._compute_generation_token_stats(
+                    sequence,
+                    prompt_ids.shape[1],
+                    self.max_new_tokens,
+                )
+            )
+            sample_stats.append(
+                {
+                    "actual_tokens_excluding_eos": actual_tokens_excluding_eos,
+                    "generated_tokens_including_eos": generated_tokens_including_eos,
+                    "steps_taken": int(self.diffusion_steps),
+                }
+            )
 
         # decode
         responses = [
@@ -373,16 +389,13 @@ class Dream(LM):
             for p, g in zip(prompt_ids, generation_ids.sequences)
         ]
 
-        return responses
+        return responses, sample_stats
 
     def generate_until(self, requests: List[Instance], disable_tqdm: bool = False):
         res = []
-        
-        # 初始化统计计数器
-        if not hasattr(self, 'total_generated_tokens'):
-            self.total_generated_tokens = 0
-        num_tokens = 0
-        num_nfe = 0  # Number of Forward Evaluations
+        total_generated_tokens_including_eos = 0
+        total_actual_tokens_excluding_eos = 0
+        total_steps = 0
 
         pbar = tqdm(
             total=len(requests),
@@ -395,64 +408,68 @@ class Dream(LM):
         for batch_idx in range(0, len(requests), self.batch_size):
             batch_requests = requests[batch_idx : batch_idx + self.batch_size]
             contexts, gen_args = zip(*[req.arguments for req in batch_requests])
-            responses = self._generate_batch(contexts)
+            responses, batch_stats = self._generate_batch(contexts)
             if not self.escape_until:
                 for i, r in enumerate(responses):
                     for s in gen_args[0]['until']:
                         r = r.split(s)[0]
                     responses[i] = r
 
+            for stats in batch_stats:
+                total_generated_tokens_including_eos += stats["generated_tokens_including_eos"]
+                total_actual_tokens_excluding_eos += stats["actual_tokens_excluding_eos"]
+                total_steps += stats["steps_taken"]
+
             res.extend(responses)
             pbar.update(len(contexts))
 
         end_time = time.time()
         total_time = end_time - start_time
-        
-        # 累积统计数据
-        num_tokens = self.total_generated_tokens
-        num_nfe = self.diffusion_steps * len(requests)  # 估算NFE
-        
-        # 保存最终统计结果
+
         final_stats = {
-            'processed_samples': len(requests),
-            'total_samples': len(requests),
-            'total_tokens': num_tokens,
-            'total_nfe': num_nfe,
-            'total_time': total_time,
-            'tokens_per_second': num_tokens / total_time if total_time > 0 else 0,
-            'nfe_per_token': num_nfe / num_tokens if num_tokens > 0 else 0,
-            'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')
+            "processed_samples": len(res),
+            "total_samples": len(requests),
+            "total_generated_tokens_including_eos": int(total_generated_tokens_including_eos),
+            "total_actual_tokens_excluding_eos": int(total_actual_tokens_excluding_eos),
+            "total_parallel_steps": int(total_steps),
+            "total_time": total_time,
+            "generated_tokens_including_eos_per_second": float(total_generated_tokens_including_eos) / total_time if total_time > 0 else 0.0,
+            "actual_tokens_excluding_eos_per_second": float(total_actual_tokens_excluding_eos) / total_time if total_time > 0 else 0.0,
+            "generated_tokens_including_eos_per_step": float(total_generated_tokens_including_eos) / float(total_steps) if total_steps > 0 else 0.0,
+            "actual_tokens_excluding_eos_per_step": float(total_actual_tokens_excluding_eos) / float(total_steps) if total_steps > 0 else 0.0,
+            "timestamp": time.time(),
+            "rank": self.rank,
+            "world_size": self.world_size,
         }
         
-        # 保存统计结果到文件
         if self.save_dir is not None:
-            import os
             os.makedirs(self.save_dir, exist_ok=True)
             
-            # 保存回答结果
             save_path = os.path.join(self.save_dir, f'rank_{self.rank}_responses.jsonl')
             with open(save_path, 'w', encoding='utf-8') as f:
                 for r in res:
                     f.write(json.dumps(r, ensure_ascii=False) + '\n')
             
-            # 保存统计结果
-            stats_path = os.path.join(self.save_dir, f'rank_{self.rank}_final_stats.json')
+            stats_path = os.path.join(self.save_dir, f'rank_{self.rank}_stats.json')
             with open(stats_path, 'w', encoding='utf-8') as f:
                 json.dump(final_stats, f, ensure_ascii=False, indent=2)
         
-        # 打印最终统计结果
-        print("\n" + "="*60)
-        print("=== 最终统计结果 ===")
-        print("="*60)
-        print(f"处理样本数: {final_stats['processed_samples']}")
-        print(f"总样本数: {final_stats['total_samples']}")
-        print(f"总token数: {final_stats['total_tokens']}")
-        print(f"总NFE数: {final_stats['total_nfe']}")
-        print(f"总时间: {final_stats['total_time']:.4f}秒")
-        print(f"Token/秒: {final_stats['tokens_per_second']:.2f}")
-        print(f"NFE/Token: {final_stats['nfe_per_token']:.4f}")
-        print(f"完成时间: {final_stats['timestamp']}")
-        print("="*60)
+        if len(res) > 0:
+            avg_tokens = total_generated_tokens_including_eos / len(res)
+            avg_steps = total_steps / len(res)
+            avg_tok_per_step = total_generated_tokens_including_eos / total_steps if total_steps > 0 else 0
+
+            print(f"\n==================== FINAL SUMMARY (Single-Branch, Corrected Stats) ====================")
+            print(f"  - Total Samples Processed: {len(res)}")
+            print(f"  - Total Generated Tokens Including EOS (sum of best paths): {total_generated_tokens_including_eos}")
+            print(f"  - Total Actual Tokens Excluding EOS (sum of best paths): {total_actual_tokens_excluding_eos}")
+            print(f"  - Total Steps (sum of best paths): {total_steps}")
+            print(f"  - Total Time: {total_time:.2f} seconds")
+            print("--------------------------------------------------------------------")
+            print(f"  - Average Tokens per Sample (best path): {avg_tokens:.2f}")
+            print(f"  - Average Steps per Sample (best path): {avg_steps:.2f}")
+            print(f"  - Overall Effective Tokens/Step Ratio: {avg_tok_per_step:.2f}")
+            print(f"  - Overall Throughput (Generated Tokens/Sec): {total_generated_tokens_including_eos / total_time:.2f}")
+            print("==================================================================================\n")
 
         return res
-
