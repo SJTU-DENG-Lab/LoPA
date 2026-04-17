@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600">
+<rect width="100%" height="100%" fill="white"/>
+<text x="500.0" y="30" text-anchor="middle" font-size="24" font-family="Arial">Step 10 Confidence Distribution</text>
+<line x1="90" y1="520" x2="970" y2="520" stroke="black" stroke-width="2"/>
+<line x1="90" y1="60" x2="90" y2="520" stroke="black" stroke-width="2"/>
+<text x="500.0" y="580" text-anchor="middle" font-size="18" font-family="Arial">Confidence</text>
+<text x="25" y="300.0" text-anchor="middle" font-size="18" font-family="Arial" transform="rotate(-90 25 300.0)">Count of Mask Positions</text>
+<line x1="90.00" y1="520" x2="90.00" y2="528" stroke="black" stroke-width="1"/>
+<text x="90.00" y="548" text-anchor="middle" font-size="14" font-family="Arial">0.0</text>
+<line x1="266.00" y1="520" x2="266.00" y2="528" stroke="black" stroke-width="1"/>
+<text x="266.00" y="548" text-anchor="middle" font-size="14" font-family="Arial">0.2</text>
+<line x1="442.00" y1="520" x2="442.00" y2="528" stroke="black" stroke-width="1"/>
+<text x="442.00" y="548" text-anchor="middle" font-size="14" font-family="Arial">0.4</text>
+<line x1="618.00" y1="520" x2="618.00" y2="528" stroke="black" stroke-width="1"/>
+<text x="618.00" y="548" text-anchor="middle" font-size="14" font-family="Arial">0.6</text>
+<line x1="794.00" y1="520" x2="794.00" y2="528" stroke="black" stroke-width="1"/>
+<text x="794.00" y="548" text-anchor="middle" font-size="14" font-family="Arial">0.8</text>
+<line x1="970.00" y1="520" x2="970.00" y2="528" stroke="black" stroke-width="1"/>
+<text x="970.00" y="548" text-anchor="middle" font-size="14" font-family="Arial">1.0</text>
+<line x1="82" y1="520.00" x2="90" y2="520.00" stroke="black" stroke-width="1"/>
+<line x1="90" y1="520.00" x2="970" y2="520.00" stroke="#d0d0d0" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="78" y="525.00" text-anchor="end" font-size="14" font-family="Arial">0</text>
+<line x1="82" y1="428.00" x2="90" y2="428.00" stroke="black" stroke-width="1"/>
+<line x1="90" y1="428.00" x2="970" y2="428.00" stroke="#d0d0d0" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="78" y="433.00" text-anchor="end" font-size="14" font-family="Arial">1308</text>
+<line x1="82" y1="336.00" x2="90" y2="336.00" stroke="black" stroke-width="1"/>
+<line x1="90" y1="336.00" x2="970" y2="336.00" stroke="#d0d0d0" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="78" y="341.00" text-anchor="end" font-size="14" font-family="Arial">2616</text>
+<line x1="82" y1="244.00" x2="90" y2="244.00" stroke="black" stroke-width="1"/>
+<line x1="90" y1="244.00" x2="970" y2="244.00" stroke="#d0d0d0" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="78" y="249.00" text-anchor="end" font-size="14" font-family="Arial">3924</text>
+<line x1="82" y1="152.00" x2="90" y2="152.00" stroke="black" stroke-width="1"/>
+<line x1="90" y1="152.00" x2="970" y2="152.00" stroke="#d0d0d0" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="78" y="157.00" text-anchor="end" font-size="14" font-family="Arial">5232</text>
+<line x1="82" y1="60.00" x2="90" y2="60.00" stroke="black" stroke-width="1"/>
+<line x1="90" y1="60.00" x2="970" y2="60.00" stroke="#d0d0d0" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="78" y="65.00" text-anchor="end" font-size="14" font-family="Arial">6540</text>
+<rect x="91.00" y="520.00" width="42.00" height="0.00" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="135.00" y="329.53" width="42.00" height="190.47" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="179.00" y="60.00" width="42.00" height="460.00" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="223.00" y="127.17" width="42.00" height="392.83" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="267.00" y="267.84" width="42.00" height="252.16" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="311.00" y="366.46" width="42.00" height="153.54" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="355.00" y="425.68" width="42.00" height="94.32" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="399.00" y="464.22" width="42.00" height="55.78" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="443.00" y="484.62" width="42.00" height="35.38" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="487.00" y="496.58" width="42.00" height="23.42" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="531.00" y="503.12" width="42.00" height="16.88" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="575.00" y="507.48" width="42.00" height="12.52" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="619.00" y="510.22" width="42.00" height="9.78" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="663.00" y="512.76" width="42.00" height="7.24" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="707.00" y="514.87" width="42.00" height="5.13" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="751.00" y="513.53" width="42.00" height="6.47" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="795.00" y="514.30" width="42.00" height="5.70" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="839.00" y="513.88" width="42.00" height="6.12" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="883.00" y="513.46" width="42.00" height="6.54" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<rect x="927.00" y="447.48" width="42.00" height="72.52" fill="#4C78A8" stroke="#2F4B6C" stroke-width="0.6"/>
+<text x="90.00" y="566" text-anchor="middle" font-size="11" font-family="Arial">0.00</text>
+<text x="266.00" y="566" text-anchor="middle" font-size="11" font-family="Arial">0.20</text>
+<text x="442.00" y="566" text-anchor="middle" font-size="11" font-family="Arial">0.40</text>
+<text x="618.00" y="566" text-anchor="middle" font-size="11" font-family="Arial">0.60</text>
+<text x="794.00" y="566" text-anchor="middle" font-size="11" font-family="Arial">0.80</text>
+<text x="970.00" y="566" text-anchor="middle" font-size="11" font-family="Arial">1.00</text>
+<text x="970.00" y="566" text-anchor="middle" font-size="11" font-family="Arial">1.00</text>
+</svg>

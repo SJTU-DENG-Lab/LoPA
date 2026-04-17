@@ -1,0 +1,1 @@
+"We know that $i^2 = -1$, $i^3 = -i$, and $i^4 = 1$. Therefore, $i^5 = i$, $i^{-25} = \\frac{1}{i^{25}} = \\frac{1}{i}$, and $i^{45} = i^3 = -i$. Adding these together, we get $i + \\frac{1}{i} - i = \\boxed{1}$."

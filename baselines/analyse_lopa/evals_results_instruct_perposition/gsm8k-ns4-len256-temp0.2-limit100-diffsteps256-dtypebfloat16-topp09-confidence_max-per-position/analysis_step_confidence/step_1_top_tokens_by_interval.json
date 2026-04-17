@@ -1,0 +1,463 @@
+{
+  "step": 1,
+  "num_intervals": 3,
+  "interval_edges": [
+    0.0,
+    0.3333333333333333,
+    0.6666666666666666,
+    1.0
+  ],
+  "intervals": [
+    {
+      "interval_index": 0,
+      "interval_label": "[0.0000, 0.3333)",
+      "lower": 0.0,
+      "upper": 0.3333333333333333,
+      "interval_total_count": 24527,
+      "top_tokens": [
+        {
+          "rank": 1,
+          "token_id": 151643,
+          "token_text_decoded": "<|endoftext|>",
+          "token_text_raw": "<|endoftext|>",
+          "token_count": 11831,
+          "token_ratio_within_interval": 0.4823663717535777
+        },
+        {
+          "rank": 2,
+          "token_id": 15,
+          "token_text_decoded": "0",
+          "token_text_raw": "0",
+          "token_count": 4031,
+          "token_ratio_within_interval": 0.16434949239613486
+        },
+        {
+          "rank": 3,
+          "token_id": 2452,
+          "token_text_decoded": ">>",
+          "token_text_raw": ">>",
+          "token_count": 3067,
+          "token_ratio_within_interval": 0.1250458678191381
+        },
+        {
+          "rank": 4,
+          "token_id": 220,
+          "token_text_decoded": " ",
+          "token_text_raw": "Ġ",
+          "token_count": 1985,
+          "token_ratio_within_interval": 0.08093121865699025
+        },
+        {
+          "rank": 5,
+          "token_id": 16,
+          "token_text_decoded": "1",
+          "token_text_raw": "1",
+          "token_count": 1025,
+          "token_ratio_within_interval": 0.04179067965915114
+        },
+        {
+          "rank": 6,
+          "token_id": 17,
+          "token_text_decoded": "2",
+          "token_text_raw": "2",
+          "token_count": 839,
+          "token_ratio_within_interval": 0.03420720022831981
+        },
+        {
+          "rank": 7,
+          "token_id": 20,
+          "token_text_decoded": "5",
+          "token_text_raw": "5",
+          "token_count": 370,
+          "token_ratio_within_interval": 0.015085416072083826
+        },
+        {
+          "rank": 8,
+          "token_id": 18,
+          "token_text_decoded": "3",
+          "token_text_raw": "3",
+          "token_count": 231,
+          "token_ratio_within_interval": 0.009418192196355037
+        },
+        {
+          "rank": 9,
+          "token_id": 19,
+          "token_text_decoded": "4",
+          "token_text_raw": "4",
+          "token_count": 194,
+          "token_ratio_within_interval": 0.007909650589146654
+        },
+        {
+          "rank": 10,
+          "token_id": 21,
+          "token_text_decoded": "6",
+          "token_text_raw": "6",
+          "token_count": 114,
+          "token_ratio_within_interval": 0.004647939005993395
+        },
+        {
+          "rank": 11,
+          "token_id": 1115,
+          "token_text_decoded": " <<",
+          "token_text_raw": "Ġ<<",
+          "token_count": 110,
+          "token_ratio_within_interval": 0.004484853426835732
+        },
+        {
+          "rank": 12,
+          "token_id": 279,
+          "token_text_decoded": " the",
+          "token_text_raw": "Ġthe",
+          "token_count": 57,
+          "token_ratio_within_interval": 0.0023239695029966976
+        },
+        {
+          "rank": 13,
+          "token_id": 23,
+          "token_text_decoded": "8",
+          "token_text_raw": "8",
+          "token_count": 45,
+          "token_ratio_within_interval": 0.0018347127655237085
+        },
+        {
+          "rank": 14,
+          "token_id": 22,
+          "token_text_decoded": "7",
+          "token_text_raw": "7",
+          "token_count": 34,
+          "token_ratio_within_interval": 0.0013862274228401354
+        },
+        {
+          "rank": 15,
+          "token_id": 624,
+          "token_text_decoded": ".\n",
+          "token_text_raw": ".Ċ",
+          "token_count": 24,
+          "token_ratio_within_interval": 0.0009785134749459778
+        },
+        {
+          "rank": 16,
+          "token_id": 11,
+          "token_text_decoded": ",",
+          "token_text_raw": ",",
+          "token_count": 23,
+          "token_ratio_within_interval": 0.0009377420801565621
+        },
+        {
+          "rank": 17,
+          "token_id": 820,
+          "token_text_decoded": "####",
+          "token_text_raw": "####",
+          "token_count": 22,
+          "token_ratio_within_interval": 0.0008969706853671464
+        },
+        {
+          "rank": 18,
+          "token_id": 3753,
+          "token_text_decoded": " house",
+          "token_text_raw": "Ġhouse",
+          "token_count": 22,
+          "token_ratio_within_interval": 0.0008969706853671464
+        },
+        {
+          "rank": 19,
+          "token_id": 315,
+          "token_text_decoded": " of",
+          "token_text_raw": "Ġof",
+          "token_count": 20,
+          "token_ratio_within_interval": 0.0008154278957883149
+        },
+        {
+          "rank": 20,
+          "token_id": 25103,
+          "token_text_decoded": " pets",
+          "token_text_raw": "Ġpets",
+          "token_count": 18,
+          "token_ratio_within_interval": 0.0007338851062094835
+        }
+      ]
+    },
+    {
+      "interval_index": 1,
+      "interval_label": "[0.3333, 0.6667)",
+      "lower": 0.3333333333333333,
+      "upper": 0.6666666666666666,
+      "interval_total_count": 1923,
+      "top_tokens": [
+        {
+          "rank": 1,
+          "token_id": 151643,
+          "token_text_decoded": "<|endoftext|>",
+          "token_text_raw": "<|endoftext|>",
+          "token_count": 1496,
+          "token_ratio_within_interval": 0.7779511180447218
+        },
+        {
+          "rank": 2,
+          "token_id": 15,
+          "token_text_decoded": "0",
+          "token_text_raw": "0",
+          "token_count": 138,
+          "token_ratio_within_interval": 0.0717628705148206
+        },
+        {
+          "rank": 3,
+          "token_id": 2452,
+          "token_text_decoded": ">>",
+          "token_text_raw": ">>",
+          "token_count": 134,
+          "token_ratio_within_interval": 0.06968278731149245
+        },
+        {
+          "rank": 4,
+          "token_id": 220,
+          "token_text_decoded": " ",
+          "token_text_raw": "Ġ",
+          "token_count": 28,
+          "token_ratio_within_interval": 0.014560582423296931
+        },
+        {
+          "rank": 5,
+          "token_id": 785,
+          "token_text_decoded": "The",
+          "token_text_raw": "The",
+          "token_count": 8,
+          "token_ratio_within_interval": 0.004160166406656267
+        },
+        {
+          "rank": 6,
+          "token_id": 820,
+          "token_text_decoded": "####",
+          "token_text_raw": "####",
+          "token_count": 6,
+          "token_ratio_within_interval": 0.0031201248049922
+        },
+        {
+          "rank": 7,
+          "token_id": 16,
+          "token_text_decoded": "1",
+          "token_text_raw": "1",
+          "token_count": 6,
+          "token_ratio_within_interval": 0.0031201248049922
+        },
+        {
+          "rank": 8,
+          "token_id": 18,
+          "token_text_decoded": "3",
+          "token_text_raw": "3",
+          "token_count": 5,
+          "token_ratio_within_interval": 0.0026001040041601664
+        },
+        {
+          "rank": 9,
+          "token_id": 374,
+          "token_text_decoded": " is",
+          "token_text_raw": "Ġis",
+          "token_count": 4,
+          "token_ratio_within_interval": 0.0020800832033281333
+        },
+        {
+          "rank": 10,
+          "token_id": 315,
+          "token_text_decoded": " of",
+          "token_text_raw": "Ġof",
+          "token_count": 4,
+          "token_ratio_within_interval": 0.0020800832033281333
+        },
+        {
+          "rank": 11,
+          "token_id": 3862,
+          "token_text_decoded": "There",
+          "token_text_raw": "There",
+          "token_count": 4,
+          "token_ratio_within_interval": 0.0020800832033281333
+        },
+        {
+          "rank": 12,
+          "token_id": 702,
+          "token_text_decoded": " has",
+          "token_text_raw": "Ġhas",
+          "token_count": 4,
+          "token_ratio_within_interval": 0.0020800832033281333
+        },
+        {
+          "rank": 13,
+          "token_id": 624,
+          "token_text_decoded": ".\n",
+          "token_text_raw": ".Ċ",
+          "token_count": 3,
+          "token_ratio_within_interval": 0.0015600624024961
+        },
+        {
+          "rank": 14,
+          "token_id": 1519,
+          "token_text_decoded": "He",
+          "token_text_raw": "He",
+          "token_count": 3,
+          "token_ratio_within_interval": 0.0015600624024961
+        },
+        {
+          "rank": 15,
+          "token_id": 279,
+          "token_text_decoded": " the",
+          "token_text_raw": "Ġthe",
+          "token_count": 3,
+          "token_ratio_within_interval": 0.0015600624024961
+        },
+        {
+          "rank": 16,
+          "token_id": 525,
+          "token_text_decoded": " are",
+          "token_text_raw": "Ġare",
+          "token_count": 3,
+          "token_ratio_within_interval": 0.0015600624024961
+        },
+        {
+          "rank": 17,
+          "token_id": 1052,
+          "token_text_decoded": " there",
+          "token_text_raw": "Ġthere",
+          "token_count": 3,
+          "token_ratio_within_interval": 0.0015600624024961
+        },
+        {
+          "rank": 18,
+          "token_id": 2679,
+          "token_text_decoded": "If",
+          "token_text_raw": "If",
+          "token_count": 3,
+          "token_ratio_within_interval": 0.0015600624024961
+        },
+        {
+          "rank": 19,
+          "token_id": 576,
+          "token_text_decoded": " The",
+          "token_text_raw": "ĠThe",
+          "token_count": 2,
+          "token_ratio_within_interval": 0.0010400416016640667
+        },
+        {
+          "rank": 20,
+          "token_id": 2790,
+          "token_text_decoded": " total",
+          "token_text_raw": "Ġtotal",
+          "token_count": 2,
+          "token_ratio_within_interval": 0.0010400416016640667
+        }
+      ]
+    },
+    {
+      "interval_index": 2,
+      "interval_label": "[0.6667, 1.0000]",
+      "lower": 0.6666666666666666,
+      "upper": 1.0,
+      "interval_total_count": 174,
+      "top_tokens": [
+        {
+          "rank": 1,
+          "token_id": 151643,
+          "token_text_decoded": "<|endoftext|>",
+          "token_text_raw": "<|endoftext|>",
+          "token_count": 162,
+          "token_ratio_within_interval": 0.9310344827586207
+        },
+        {
+          "rank": 2,
+          "token_id": 53665,
+          "token_text_decoded": " Janet",
+          "token_text_raw": "ĠJanet",
+          "token_count": 1,
+          "token_ratio_within_interval": 0.005747126436781609
+        },
+        {
+          "rank": 3,
+          "token_id": 17090,
+          "token_text_decoded": "iza",
+          "token_text_raw": "iza",
+          "token_count": 1,
+          "token_ratio_within_interval": 0.005747126436781609
+        },
+        {
+          "rank": 4,
+          "token_id": 8473,
+          "token_text_decoded": " runs",
+          "token_text_raw": "Ġruns",
+          "token_count": 1,
+          "token_ratio_within_interval": 0.005747126436781609
+        },
+        {
+          "rank": 5,
+          "token_id": 18880,
+          "token_text_decoded": " Marc",
+          "token_text_raw": "ĠMarc",
+          "token_count": 1,
+          "token_ratio_within_interval": 0.005747126436781609
+        },
+        {
+          "rank": 6,
+          "token_id": 702,
+          "token_text_decoded": " has",
+          "token_text_raw": "Ġhas",
+          "token_count": 1,
+          "token_ratio_within_interval": 0.005747126436781609
+        },
+        {
+          "rank": 7,
+          "token_id": 54,
+          "token_text_decoded": "W",
+          "token_text_raw": "W",
+          "token_count": 1,
+          "token_ratio_within_interval": 0.005747126436781609
+        },
+        {
+          "rank": 8,
+          "token_id": 2452,
+          "token_text_decoded": ">>",
+          "token_text_raw": ">>",
+          "token_count": 1,
+          "token_ratio_within_interval": 0.005747126436781609
+        },
+        {
+          "rank": 9,
+          "token_id": 7794,
+          "token_text_decoded": " Thursday",
+          "token_text_raw": "ĠThursday",
+          "token_count": 1,
+          "token_ratio_within_interval": 0.005747126436781609
+        },
+        {
+          "rank": 10,
+          "token_id": 20445,
+          "token_text_decoded": " Sarah",
+          "token_text_raw": "ĠSarah",
+          "token_count": 1,
+          "token_ratio_within_interval": 0.005747126436781609
+        },
+        {
+          "rank": 11,
+          "token_id": 1558,
+          "token_text_decoded": " does",
+          "token_text_raw": "Ġdoes",
+          "token_count": 1,
+          "token_ratio_within_interval": 0.005747126436781609
+        },
+        {
+          "rank": 12,
+          "token_id": 69554,
+          "token_text_decoded": " Cand",
+          "token_text_raw": "ĠCand",
+          "token_count": 1,
+          "token_ratio_within_interval": 0.005747126436781609
+        },
+        {
+          "rank": 13,
+          "token_id": 46613,
+          "token_text_decoded": " Dana",
+          "token_text_raw": "ĠDana",
+          "token_count": 1,
+          "token_ratio_within_interval": 0.005747126436781609
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "input_dir": "/home/chenkai/data/eval_all/analyse_lopa/evals_results_instruct_perposition/gsm8k-ns4-len256-temp0.2-limit100-diffsteps256-dtypebfloat16-topp09-confidence_max-per-position",
+  "steps": [
+    {
+      "step": 1,
+      "num_positions": 26624,
+      "status": "ok"
+    },
+    {
+      "step": 50,
+      "num_positions": 21528,
+      "status": "ok"
+    },
+    {
+      "step": 100,
+      "num_positions": 16328,
+      "status": "ok"
+    }
+  ]
+}

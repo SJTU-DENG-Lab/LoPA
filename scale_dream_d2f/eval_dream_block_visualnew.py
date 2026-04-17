@@ -121,6 +121,7 @@ class Dream(LM):
         self.total_generation_time = 0.0
         self.total_generated_tokens = 0
         self.total_actual_tokens = 0  # 实际生成的token数（去掉EOS）
+        self.total_parallel_steps = 0
         self.all_generation_times = []
         self.all_generated_tokens = []
         self.all_actual_tokens = []
@@ -418,6 +419,7 @@ class Dream(LM):
 
         batch_end_time = time.time()
         batch_generation_time = batch_end_time - batch_start_time
+        self.total_parallel_steps += step_global
 
         # decode & 统计
         responses = []
@@ -572,15 +574,19 @@ class Dream(LM):
             print(f"总生成时间: {self.total_generation_time:.4f}秒")
             print(f"总生成token数: {self.total_generated_tokens}")
             print(f"总实际token数: {self.total_actual_tokens}")
+            print(f"总前向Step数: {self.total_parallel_steps}")
             print()
             print("=== 平均指标 ===")
             print(f"平均生成时间: {avg_generation_time:.4f}秒")
             print(f"平均生成token数: {avg_generated_tokens:.2f}")
             print(f"平均实际token数: {avg_actual_tokens:.2f}")
+            print(f"平均前向Step数: {self.total_parallel_steps / self.total_prompts:.2f}")
             print()
             print("=== 平均吞吐量 ===")
             print(f"平均生成token吞吐量: {avg_throughput_generated:.2f} tokens/s")
             print(f"平均实际token吞吐量: {avg_throughput_actual:.2f} tokens/s")
+            print(f"生成token/Step: {self.total_generated_tokens / self.total_parallel_steps if self.total_parallel_steps > 0 else 0:.2f}")
+            print(f"实际token/Step: {self.total_actual_tokens / self.total_parallel_steps if self.total_parallel_steps > 0 else 0:.2f}")
             print("="*60)
 
             if self.save_dir is not None:
@@ -591,9 +597,12 @@ class Dream(LM):
                     "total_samples": len(requests),
                     "total_generated_tokens_including_eos": int(self.total_generated_tokens),
                     "total_actual_tokens_excluding_eos": int(self.total_actual_tokens),
+                    "total_parallel_steps": int(self.total_parallel_steps),
                     "total_time": total_time,
                     "generated_tokens_including_eos_per_second": float(self.total_generated_tokens) / total_time if total_time > 0 else 0.0,
                     "actual_tokens_excluding_eos_per_second": float(self.total_actual_tokens) / total_time if total_time > 0 else 0.0,
+                    "generated_tokens_including_eos_per_step": float(self.total_generated_tokens) / float(self.total_parallel_steps) if self.total_parallel_steps > 0 else 0.0,
+                    "actual_tokens_excluding_eos_per_step": float(self.total_actual_tokens) / float(self.total_parallel_steps) if self.total_parallel_steps > 0 else 0.0,
                     "timestamp": time.time(),
                     "rank": self.rank,
                     "world_size": self.world_size,
