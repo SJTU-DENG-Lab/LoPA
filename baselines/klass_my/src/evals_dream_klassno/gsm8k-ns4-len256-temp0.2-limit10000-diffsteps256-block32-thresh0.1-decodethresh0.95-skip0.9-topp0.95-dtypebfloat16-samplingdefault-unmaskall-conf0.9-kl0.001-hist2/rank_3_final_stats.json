@@ -1,0 +1,12 @@
+{
+  "processed_samples": 165,
+  "total_samples": 165,
+  "total_tokens_with_eos": 42240,
+  "total_tokens_without_eos": 20166,
+  "total_used_steps": 17207,
+  "total_time": 805.8035833835602,
+  "tokens_per_second_with_eos": 52.4197222139851,
+  "tokens_per_second_without_eos": 25.025949767216463,
+  "steps_per_sample": 104.28484848484848,
+  "timestamp": "2026-04-17 22:02:07"
+}

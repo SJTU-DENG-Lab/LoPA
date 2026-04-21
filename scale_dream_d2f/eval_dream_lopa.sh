@@ -161,15 +161,15 @@ for i in "${!HE_MODES_ARRAY[@]}"; do
     echo "  - VFBW: ${HE_VFBWS_ARRAY[$i]}, BTopP: ${HE_BTOPPS_ARRAY[$i]}, Alpha: ${HE_ALPHAS_ARRAY[$i]}"
     echo "  - Output: $output_path"
 
-    # CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29510 --num_processes 8 ${SCRIPT_NAME} --model dream \
-    #     --model_args pretrained=${model},max_new_tokens=512,temperature=${HE_TEMPS_ARRAY[$i]},add_bos_token=true,escape_until=true,dtype=${HE_DTYPES_ARRAY[$i]},use_uncertainty_logic=${HE_MODES_ARRAY[$i]},branching_factor=${HE_BFS_ARRAY[$i]},base_branch_competition=${HE_BBCS_ARRAY[$i]},verification_force_base_winner=${HE_VFBWS_ARRAY[$i]},branch_topp=${HE_BTOPPS_ARRAY[$i]},selection_conf_alpha=${HE_ALPHAS_ARRAY[$i]},save_dir=${output_path} \
-    #     --tasks humaneval \
-    #     --num_fewshot 0 \
-    #     --batch_size 1 \
-    #     --limit ${HE_LIMITS_ARRAY[$i]} \
-    #     --output_path "$output_path" \
-    #     --log_samples \
-    #     --confirm_run_unsafe_code
+    CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29510 --num_processes 8 ${SCRIPT_NAME} --model dream \
+        --model_args pretrained=${model},max_new_tokens=512,temperature=${HE_TEMPS_ARRAY[$i]},add_bos_token=true,escape_until=true,dtype=${HE_DTYPES_ARRAY[$i]},use_uncertainty_logic=${HE_MODES_ARRAY[$i]},branching_factor=${HE_BFS_ARRAY[$i]},base_branch_competition=${HE_BBCS_ARRAY[$i]},verification_force_base_winner=${HE_VFBWS_ARRAY[$i]},branch_topp=${HE_BTOPPS_ARRAY[$i]},selection_conf_alpha=${HE_ALPHAS_ARRAY[$i]},save_dir=${output_path} \
+        --tasks humaneval \
+        --num_fewshot 0 \
+        --batch_size 1 \
+        --limit ${HE_LIMITS_ARRAY[$i]} \
+        --output_path "$output_path" \
+        --log_samples \
+        --confirm_run_unsafe_code
 done
 echo "#################### HumanEval Evaluations Finished ####################"
 echo "NOTICE: Remember to postprocess humaneval results."
@@ -217,7 +217,7 @@ for i in "${!TASKS_ARRAY[@]}"; do
     echo "  - BF: ${BFS_ARRAY[$i]}, BBC: ${BBCS_ARRAY[$i]}, VFBW: ${VFBWS_ARRAY[$i]}, BTopP: ${BTOPPS_ARRAY[$i]}, Alpha: ${ALPHAS_ARRAY[$i]}"
     echo "  - Output: $output_path"
 
-    CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29511 --num_processes 8 ${SCRIPT_NAME} --model dream \
+    CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29511 --num_processes 7 ${SCRIPT_NAME} --model dream \
         --model_args pretrained=${model},max_new_tokens=${LENGTH_ARRAY[$i]},add_bos_token=true,temperature=${TEMP_ARRAY[$i]},dtype=${DTYPES_ARRAY[$i]},use_uncertainty_logic=${MODES_ARRAY[$i]},branching_factor=${BFS_ARRAY[$i]},base_branch_competition=${BBCS_ARRAY[$i]},verification_force_base_winner=${VFBWS_ARRAY[$i]},branch_topp=${BTOPPS_ARRAY[$i]},selection_conf_alpha=${ALPHAS_ARRAY[$i]},save_dir=${output_path} \
         --tasks ${TASKS_ARRAY[$i]} \
         --num_fewshot ${NSHOTS_ARRAY[$i]} \

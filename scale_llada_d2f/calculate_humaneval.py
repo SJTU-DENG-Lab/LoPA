@@ -13,6 +13,9 @@ from pathlib import Path
 # os.environ["https_proxy"] = "http://proxy-node:7890"
 # os.environ["http_proxy"] = "http://proxy-node:7890"
 # os.environ["all_proxy"] = "socks5://proxy-node:7890"
+
+os.environ["CURL_CA_BUNDLE"] = ""
+os.environ["REQUESTS_CA_BUNDLE"] = ""
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 
 def find_humaneval_files(root_dir):
@@ -80,7 +83,7 @@ def process_file(jsonl_file, postprocess_script):
 
 def main():
     # 配置路径
-    root_dir = "/mnt/rl/xinyi/LoPA/scale_dream_d2f/results/eval_dream_d2f_new"
+    root_dir = "/mnt/rl/xinyi/LoPA/baselines/klass_my/src/evals_dream_klassno"
     postprocess_script = "/mnt/rl/xinyi/LoPA/scale_llada_d2f/postprocess_code.py"
     
     print(f"搜索目录: {root_dir}")

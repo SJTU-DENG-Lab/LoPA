@@ -1,0 +1,6 @@
+=== 处理文件: /mnt/rl/xinyi/LoPA/baselines/klass_my/src/evals_dream_klassno/humaneval-ns0-len512-temp0.2-limit10000-diffsteps512-block32-thresh0.1-decodethresh0.95-skip0.95-topp0.95-dtypebfloat16-samplingdefault-unmaskall-conf0.8-kl0.001-hist2/__mnt__rl__xinyi__models__Dream-v0-Instruct-7B/samples_humaneval_2026-04-17T21-47-15.615409.jsonl ===
+命令: python /mnt/rl/xinyi/LoPA/scale_llada_d2f/postprocess_code.py /mnt/rl/xinyi/LoPA/baselines/klass_my/src/evals_dream_klassno/humaneval-ns0-len512-temp0.2-limit10000-diffsteps512-block32-thresh0.1-decodethresh0.95-skip0.95-topp0.95-dtypebfloat16-samplingdefault-unmaskall-conf0.8-kl0.001-hist2/__mnt__rl__xinyi__models__Dream-v0-Instruct-7B/samples_humaneval_2026-04-17T21-47-15.615409.jsonl
+返回码: 0
+
+=== 标准输出 ===
+0.5609756097560976

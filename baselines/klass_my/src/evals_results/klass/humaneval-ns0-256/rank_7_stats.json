@@ -1,0 +1,15 @@
+{
+  "processed_samples": 21,
+  "total_samples": 21,
+  "total_generated_tokens_including_eos": 5376,
+  "total_actual_tokens_excluding_eos": 5011,
+  "total_parallel_steps": 2329,
+  "total_time": 53.96955180168152,
+  "generated_tokens_including_eos_per_second": 99.61172217540079,
+  "actual_tokens_excluding_eos_per_second": 92.8486495202629,
+  "generated_tokens_including_eos_per_step": 2.308286818376986,
+  "actual_tokens_excluding_eos_per_step": 2.151567196221554,
+  "timestamp": 1776430675.6259906,
+  "rank": 7,
+  "world_size": 8
+}

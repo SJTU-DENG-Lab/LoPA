@@ -1,0 +1,33 @@
+{
+  "processed_samples": 1320,
+  "total_samples": 1320,
+  "total_generated_tokens_including_eos": 337920,
+  "total_actual_tokens_excluding_eos": 329052,
+  "total_parallel_steps": 127643,
+  "total_time": 6184.794266700745,
+  "rank_files_found": [
+    "rank_0_stats.json",
+    "rank_1_stats.json",
+    "rank_2_stats.json",
+    "rank_3_stats.json",
+    "rank_4_stats.json",
+    "rank_5_stats.json",
+    "rank_6_stats.json",
+    "rank_7_stats.json"
+  ],
+  "rank_files_missing": [],
+  "overall_generated_tokens_including_eos_per_second": 54.637225658318,
+  "overall_actual_tokens_excluding_eos_per_second": 53.20338653326484,
+  "avg_generated_tokens_including_eos_per_second": 54.65443855645767,
+  "avg_actual_tokens_excluding_eos_per_second": 53.21872449045146,
+  "avg_generated_tokens_including_eos_per_step": 2.6479536043796426,
+  "avg_actual_tokens_excluding_eos_per_step": 2.5783855091246854,
+  "overall_generated_tokens_including_eos_per_step": 2.6473837186528053,
+  "overall_actual_tokens_excluding_eos_per_step": 2.5779086984793524,
+  "avg_time_per_sample": 4.6854502020460185,
+  "avg_generated_tokens_including_eos_per_sample": 256.0,
+  "avg_actual_tokens_excluding_eos_per_sample": 249.28181818181818,
+  "avg_parallel_steps_per_sample": 96.69924242424243,
+  "files_processed": 8,
+  "files_missing_count": 0
+}

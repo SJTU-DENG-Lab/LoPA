@@ -22,22 +22,22 @@ kl_thresholds="0.001 0.001 0.005" # KL散度阈值
 history_lengths="2 2 2" # 历史长度阈值
 
 
-tasks="minerva_math"
-nshots="4"
-lengths="256"
-temperatures="0.2"
-limits="10000"
-block_sizes="32"
-block_add_thresholds="0.1"
-decoded_token_thresholds="0.95"
-skip_thresholds="0.9"
-top_ps="0.95"
-dtypes="bfloat16"
-sampling_strategies="default"
-unmask_strategies="all"
-conf_thresholds="0.9"
-kl_thresholds="0.005"
-history_lengths="2"
+# tasks="minerva_math"
+# nshots="4"
+# lengths="256"
+# temperatures="0.2"
+# limits="10000"
+# block_sizes="32"
+# block_add_thresholds="0.1"
+# decoded_token_thresholds="0.95"
+# skip_thresholds="0.9"
+# top_ps="0.95"
+# dtypes="bfloat16"
+# sampling_strategies="default"
+# unmask_strategies="all"
+# conf_thresholds="0.9"
+# kl_thresholds="0.005"
+# history_lengths="2"
 
 # ==========================================
 # HumanEval参数配置列表
@@ -66,7 +66,7 @@ humaneval_history_lengths="2" # HumanEval的历史长度阈值
 base_model=/mnt/rl/xinyi/models/Dream-v0-Instruct-7B
 
 lora_models=(
-    "/home/chenkai/data/ckpt/wx_dream_base/Decoder-ddt_test-20k"
+    "no"
     # "/data1/xck/ckpt/my_data_block16_maskold_fp16_wx_smalllora/ddt_test/ddt_test/Decoder-ddt_test-19k"
     # "/data1/xck/ckpt/wx/dllm_block/data/dream_mask/Decoder-ddt_test-20k"
     # "/data1/xck/ckpt/jiachun/experiment/dllm_block/0606_block_attnmask_teacherlogits_blksize16_merged/denoiser-dllm_block-20k"
@@ -158,7 +158,10 @@ if [[ ${#HUMANEVAL_LENGTHS_ARRAY[@]} -ne $humaneval_array_length ]] || \
 fi
 
 export HF_ALLOW_CODE_EVAL=1
-export HF_ENDPOINT=https://hf-mirror.com
+export CURL_CA_BUNDLE=""
+export REQUESTS_CA_BUNDLE=""
+export HF_ENDPOINT="https://hf-mirror.com"
+export HF_HOME="/mnt/rl/xinyi/LoPA"
 
 # ==========================================
 # 评测主循环
@@ -171,7 +174,7 @@ for lora_model in "${lora_models[@]}"; do
     
     # HumanEval评估（参数列表遍历）
     for i in "${!HUMANEVAL_NSHOTS_ARRAY[@]}"; do
-        output_path="evals_dream_seed1234${lora_model_name}/humaneval-ns${HUMANEVAL_NSHOTS_ARRAY[$i]}-len${HUMANEVAL_LENGTHS_ARRAY[$i]}-temp${HUMANEVAL_TEMP_ARRAY[$i]}-limit${HUMANEVAL_LIMITS_ARRAY[$i]}-diffsteps${HUMANEVAL_DIFFUSION_STEPS_ARRAY[$i]}-block${HUMANEVAL_BLOCK_SIZES_ARRAY[$i]}-thresh${HUMANEVAL_BLOCK_ADD_THRESHOLDS_ARRAY[$i]}-decodethresh${HUMANEVAL_DECODED_TOKEN_THRESHOLDS_ARRAY[$i]}-skip${HUMANEVAL_SKIP_THRESHOLDS_ARRAY[$i]}-topp${HUMANEVAL_TOP_PS_ARRAY[$i]}-dtype${HUMANEVAL_DTYPES_ARRAY[$i]}-sampling${HUMANEVAL_SAMPLING_STRATEGIES_ARRAY[$i]}-unmask${HUMANEVAL_UNMASK_STRATEGIES_ARRAY[$i]}-conf${HUMANEVAL_CONF_THRESHOLDS_ARRAY[$i]}-kl${HUMANEVAL_KL_THRESHOLDS_ARRAY[$i]}-hist${HUMANEVAL_HISTORY_LENGTHS_ARRAY[$i]}"
+        output_path="evals_dream_klass${lora_model_name}/humaneval-ns${HUMANEVAL_NSHOTS_ARRAY[$i]}-len${HUMANEVAL_LENGTHS_ARRAY[$i]}-temp${HUMANEVAL_TEMP_ARRAY[$i]}-limit${HUMANEVAL_LIMITS_ARRAY[$i]}-diffsteps${HUMANEVAL_DIFFUSION_STEPS_ARRAY[$i]}-block${HUMANEVAL_BLOCK_SIZES_ARRAY[$i]}-thresh${HUMANEVAL_BLOCK_ADD_THRESHOLDS_ARRAY[$i]}-decodethresh${HUMANEVAL_DECODED_TOKEN_THRESHOLDS_ARRAY[$i]}-skip${HUMANEVAL_SKIP_THRESHOLDS_ARRAY[$i]}-topp${HUMANEVAL_TOP_PS_ARRAY[$i]}-dtype${HUMANEVAL_DTYPES_ARRAY[$i]}-sampling${HUMANEVAL_SAMPLING_STRATEGIES_ARRAY[$i]}-unmask${HUMANEVAL_UNMASK_STRATEGIES_ARRAY[$i]}-conf${HUMANEVAL_CONF_THRESHOLDS_ARRAY[$i]}-kl${HUMANEVAL_KL_THRESHOLDS_ARRAY[$i]}-hist${HUMANEVAL_HISTORY_LENGTHS_ARRAY[$i]}"
         echo "Running HumanEval evaluation $((i+1))/${humaneval_array_length} for $lora_model_name..."
         echo "HumanEval Config Output: $output_path"
         
@@ -185,19 +188,19 @@ for lora_model in "${lora_models[@]}"; do
             humaneval_model_args="${base_args},top_p=${HUMANEVAL_TOP_PS_ARRAY[$i]}"
         fi
         
-        # CUDA_VISIBLE_DEVICES=0,1 accelerate launch --main_process_port 29520 --num_processes 2 eval_dream_my.py --model dream_lora \
-        #     --model_args $humaneval_model_args \
-        #     --tasks humaneval \
-        #     --num_fewshot ${HUMANEVAL_NSHOTS_ARRAY[$i]} \
-        #     --batch_size 1 \
-        #     --output_path $output_path \
-        #     --log_samples \
-        #     --confirm_run_unsafe_code
+        CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29520 --num_processes 8 eval_dream_my.py --model dream_lora \
+            --model_args $humaneval_model_args \
+            --tasks humaneval \
+            --num_fewshot ${HUMANEVAL_NSHOTS_ARRAY[$i]} \
+            --batch_size 1 \
+            --output_path $output_path \
+            --log_samples \
+            --confirm_run_unsafe_code
     done
 
     # 其他任务的评估 (注：由于外部 tasks 为注释状态，此段循环默认不执行，如需启用取消文件开头的注释即可)
     for i in "${!TASKS_ARRAY[@]}"; do
-        output_path="evals_dream_seed1234_noeos${lora_model_name}/${TASKS_ARRAY[$i]}-ns${NSHOTS_ARRAY[$i]}-len${LENGTH_ARRAY[$i]}-temp${TEMP_ARRAY[$i]}-limit${LIMITS_ARRAY[$i]}-diffsteps${LENGTH_ARRAY[$i]}-block${BLOCK_SIZES_ARRAY[$i]}-thresh${BLOCK_ADD_THRESHOLDS_ARRAY[$i]}-decodethresh${DECODED_TOKEN_THRESHOLDS_ARRAY[$i]}-skip${SKIP_THRESHOLDS_ARRAY[$i]}-topp${TOP_PS_ARRAY[$i]}-dtype${DTYPES_ARRAY[$i]}-sampling${SAMPLING_STRATEGIES_ARRAY[$i]}-unmask${UNMASK_STRATEGIES_ARRAY[$i]}-conf${CONF_THRESHOLDS_ARRAY[$i]}-kl${KL_THRESHOLDS_ARRAY[$i]}-hist${HISTORY_LENGTHS_ARRAY[$i]}"
+        output_path="evals_dream_klass${lora_model_name}/${TASKS_ARRAY[$i]}-ns${NSHOTS_ARRAY[$i]}-len${LENGTH_ARRAY[$i]}-temp${TEMP_ARRAY[$i]}-limit${LIMITS_ARRAY[$i]}-diffsteps${LENGTH_ARRAY[$i]}-block${BLOCK_SIZES_ARRAY[$i]}-thresh${BLOCK_ADD_THRESHOLDS_ARRAY[$i]}-decodethresh${DECODED_TOKEN_THRESHOLDS_ARRAY[$i]}-skip${SKIP_THRESHOLDS_ARRAY[$i]}-topp${TOP_PS_ARRAY[$i]}-dtype${DTYPES_ARRAY[$i]}-sampling${SAMPLING_STRATEGIES_ARRAY[$i]}-unmask${UNMASK_STRATEGIES_ARRAY[$i]}-conf${CONF_THRESHOLDS_ARRAY[$i]}-kl${KL_THRESHOLDS_ARRAY[$i]}-hist${HISTORY_LENGTHS_ARRAY[$i]}"
         echo "Running Task evaluation for ${TASKS_ARRAY[$i]}..."
         echo "Task Config Output: $output_path"
         
@@ -210,7 +213,7 @@ for lora_model in "${lora_models[@]}"; do
             model_args="${base_args},top_p=${TOP_PS_ARRAY[$i]}"
         fi
         
-        CUDA_VISIBLE_DEVICES=0,1 accelerate launch --main_process_port 29520 --num_processes 2 eval_dream_my.py --model dream_lora \
+        CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29520 --num_processes 8 eval_dream_my.py --model dream_lora \
             --model_args $model_args \
             --tasks ${TASKS_ARRAY[$i]} \
             --limit ${LIMITS_ARRAY[$i]} \
