@@ -107,8 +107,6 @@ class LLaDAEvalHarness(LM):
             model_kwargs.update({'device_map': {'': f'{self.accelerator.device}'}})
         config = AutoConfig.from_pretrained(model_path)
         config.flash_attention = True
-        # transformers>=4.52 may iterate over model._tp_plan during distributed
-        # loading warmup when device_map is set. LLaDA does not define a TP plan.
         if getattr(LLaDAModelLM, "_tp_plan", None) is None:
             LLaDAModelLM._tp_plan = []
         self.model = LLaDAModelLM.from_pretrained(model_path, trust_remote_code=True, torch_dtype=torch.bfloat16, config=config, **model_kwargs)
@@ -286,41 +284,17 @@ class LLaDAEvalHarness(LM):
 
     def loglikelihood_rolling(self, requests):
         raise NotImplementedError
-
-    def _compute_generation_token_stats(
-        self,
-        generated_sequence,
-        prompt_length: int,
-        generated_length: int,
-    ):
-        if isinstance(generated_sequence, torch.Tensor):
-            generated_sequence = generated_sequence.tolist()
-
-        generated_ids = list(generated_sequence[prompt_length:])
-        generated_tokens_including_eos = sum(token_id != self.mask_id for token_id in generated_ids)
-
-        actual_ids = generated_ids
-        eos_token_id = self.tokenizer.eos_token_id
-        if eos_token_id is not None and eos_token_id in actual_ids:
-            actual_ids = actual_ids[: actual_ids.index(eos_token_id)]
-        actual_ids = [token_id for token_id in actual_ids if token_id != self.mask_id]
-
-        actual_tokens_excluding_eos = len(actual_ids)
-        return actual_ids, actual_tokens_excluding_eos, generated_tokens_including_eos
     
     
     def generate_until(self, requests):
         output = []
-        total_generated_tokens_including_eos = 0
-        total_actual_tokens_excluding_eos = 0
-        total_steps = 0
-        run_time = 0.0
+        num_tokens = 0
+        num_nfe = 0
         processed_count = 0
-        save_path = None
         if self.save_dir is not None:
             os.makedirs(self.save_dir, exist_ok=True)
             rank = self.rank
-            save_path = os.path.join(self.save_dir, f'rank_{rank}_responses.jsonl')
+            save_path = os.path.join(self.save_dir, f'rank_{rank}.jsonl')
             print(f"save_path: {save_path}")
             if os.path.exists(save_path):
                 print(f"load from {save_path}")
@@ -328,12 +302,13 @@ class LLaDAEvalHarness(LM):
                     output = [json.loads(line) for line in f]
                     processed_count = len(output)
                 print(f"processed_count: {processed_count}")
-        start_time = time.time()
+        run_time = 0
         for i, req in enumerate(tqdm(requests, desc="Generating...")):
+            start_time = time.time()
+
             if i < processed_count:
                 continue
-
-            iter_start_time = time.time()
+            
             question = req.args[0]
             if self.is_instruct:
                 tail = r" Please reason step by step, and put your final answer within \boxed{}."
@@ -367,28 +342,22 @@ class LLaDAEvalHarness(LM):
                 generated_answer, nfe = generate(self.model, input_ids, steps=self.steps, gen_length=self.gen_length, block_length=self.block_length, 
                                         temperature=0, remasking=self.remasking, mask_id=self.mask_id, threshold=self.threshold)
 
-            generated_sequence = generated_answer
-            actual_ids, actual_tokens_excluding_eos, generated_tokens_including_eos = (
-                self._compute_generation_token_stats(
-                    generated_sequence[0],
-                    input_ids.shape[1],
-                    self.gen_length,
-                )
-            )
-            total_generated_tokens_including_eos += generated_tokens_including_eos
-            total_actual_tokens_excluding_eos += actual_tokens_excluding_eos
-            total_steps += int(nfe)
-
             if self.is_instruct and 'task_id' in req.doc and str(req.doc['task_id']).lower().startswith('humaneval'):
-                generated_answer = self.tokenizer.decode(generated_sequence[0][input_ids.shape[1]:], skip_special_tokens=True)
+                if self.show_speed:
+                    num_tokens += (generated_answer != 126081).sum()
+                    num_nfe += nfe
+                generated_answer = self.tokenizer.decode(generated_answer[0][input_ids.shape[1]:], skip_special_tokens=True)
             else:
-                generated_answer = self.tokenizer.decode(generated_sequence[0][input_ids.shape[1]:], skip_special_tokens=False)
+                generated_answer = self.tokenizer.decode(generated_answer[0][input_ids.shape[1]:], skip_special_tokens=False)
                 for stop_seq in stop_tokens:
                     if stop_seq in generated_answer:
                         generated_answer = generated_answer.split(stop_seq)[0]
 
                 # remove special tokens
                 generated_answer_ids = torch.tensor(self.tokenizer(generated_answer)["input_ids"])
+                if self.show_speed:
+                    num_tokens += (generated_answer_ids != 126081).sum()
+                    num_nfe += nfe
                 generated_answer = self.tokenizer.decode(generated_answer_ids, skip_special_tokens=True)
             output.append(generated_answer)
 
@@ -397,51 +366,16 @@ class LLaDAEvalHarness(LM):
                     f.write(json.dumps(generated_answer, ensure_ascii=False) + '\n')
 
             end_time = time.time()
-            run_time += end_time - iter_start_time
+            run_time += end_time - start_time
             
             print('=' * 20)
             print('question: ', question)
             print('answer: ', generated_answer)
             print('=' * 20, end='\n\n')
-
-        total_time = time.time() - start_time
-        final_stats = {
-            "processed_samples": len(output),
-            "total_samples": len(requests),
-            "total_generated_tokens_including_eos": int(total_generated_tokens_including_eos),
-            "total_actual_tokens_excluding_eos": int(total_actual_tokens_excluding_eos),
-            "total_parallel_steps": int(total_steps),
-            "total_time": total_time,
-            "generated_tokens_including_eos_per_second": float(total_generated_tokens_including_eos) / total_time if total_time > 0 else 0.0,
-            "actual_tokens_excluding_eos_per_second": float(total_actual_tokens_excluding_eos) / total_time if total_time > 0 else 0.0,
-            "generated_tokens_including_eos_per_step": float(total_generated_tokens_including_eos) / float(total_steps) if total_steps > 0 else 0.0,
-            "actual_tokens_excluding_eos_per_step": float(total_actual_tokens_excluding_eos) / float(total_steps) if total_steps > 0 else 0.0,
-            "timestamp": time.time(),
-            "rank": self.rank,
-            "world_size": self.world_size,
-        }
-
-        if self.save_dir is not None:
-            stats_path = os.path.join(self.save_dir, f'rank_{self.rank}_stats.json')
-            with open(stats_path, 'w', encoding='utf-8') as f:
-                json.dump(final_stats, f, ensure_ascii=False, indent=2)
-
-        if len(output) > 0 and self.show_speed:
-            avg_tokens = total_generated_tokens_including_eos / len(output)
-            avg_steps = total_steps / len(output)
-            avg_tok_per_step = total_generated_tokens_including_eos / total_steps if total_steps > 0 else 0
-            print(f"\n==================== FINAL SUMMARY (Single-Branch, Corrected Stats) ====================")
-            print(f"  - Total Samples Processed: {len(output)}")
-            print(f"  - Total Generated Tokens Including EOS (sum of best paths): {total_generated_tokens_including_eos}")
-            print(f"  - Total Actual Tokens Excluding EOS (sum of best paths): {total_actual_tokens_excluding_eos}")
-            print(f"  - Total Steps (sum of best paths): {total_steps}")
-            print(f"  - Total Time: {total_time:.2f} seconds")
-            print("--------------------------------------------------------------------")
-            print(f"  - Average Tokens per Sample (best path): {avg_tokens:.2f}")
-            print(f"  - Average Steps per Sample (best path): {avg_steps:.2f}")
-            print(f"  - Overall Effective Tokens/Step Ratio: {avg_tok_per_step:.2f}")
-            print(f"  - Overall Throughput (Generated Tokens/Sec): {total_generated_tokens_including_eos / total_time:.2f}")
-            print("==================================================================================\n")
+            
+        if self.show_speed:
+            print(f"Total time taken: {run_time} seconds")
+            print(f"Total NFE is {num_nfe}")
         return output
 
 

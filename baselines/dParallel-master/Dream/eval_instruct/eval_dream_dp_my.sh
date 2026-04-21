@@ -120,7 +120,7 @@ for lora_model in "${lora_models[@]}"; do
     # HumanEval评估（参数列表遍历）
     for i in "${!HUMANEVAL_NSHOTS_ARRAY[@]}"; do
         # 简化了输出路径的命名，去掉了无用的参数标识
-        output_path="evals_dream_dp_my${lora_model_name}/humaneval-ns${HUMANEVAL_NSHOTS_ARRAY[$i]}-len${HUMANEVAL_LENGTHS_ARRAY[$i]}-temp${HUMANEVAL_TEMP_ARRAY[$i]}-limit${HUMANEVAL_LIMITS_ARRAY[$i]}-diffsteps${HUMANEVAL_DIFFUSION_STEPS_ARRAY[$i]}-blocklen${HUMANEVAL_BLOCK_LENGTHS_ARRAY[$i]}-dpara${HUMANEVAL_DPARALLELS_ARRAY[$i]}-thresh${HUMANEVAL_THRESHOLDS_ARRAY[$i]}-topp${HUMANEVAL_TOP_PS_ARRAY[$i]}-dtype${HUMANEVAL_DTYPES_ARRAY[$i]}"
+        output_path="evals_dream_dp_my_new${lora_model_name}/humaneval-ns${HUMANEVAL_NSHOTS_ARRAY[$i]}-len${HUMANEVAL_LENGTHS_ARRAY[$i]}-temp${HUMANEVAL_TEMP_ARRAY[$i]}-limit${HUMANEVAL_LIMITS_ARRAY[$i]}-diffsteps${HUMANEVAL_DIFFUSION_STEPS_ARRAY[$i]}-blocklen${HUMANEVAL_BLOCK_LENGTHS_ARRAY[$i]}-dpara${HUMANEVAL_DPARALLELS_ARRAY[$i]}-thresh${HUMANEVAL_THRESHOLDS_ARRAY[$i]}-topp${HUMANEVAL_TOP_PS_ARRAY[$i]}-dtype${HUMANEVAL_DTYPES_ARRAY[$i]}"
         echo "Running HumanEval evaluation $((i+1))/${humaneval_array_length} for $lora_model_name..."
         echo "HumanEval Config Output: $output_path"
         
@@ -147,7 +147,7 @@ for lora_model in "${lora_models[@]}"; do
     # 其他任务的评估 (注：由于外部 tasks 为注释状态，此段循环默认不执行，如需启用取消文件开头的注释即可)
     for i in "${!TASKS_ARRAY[@]}"; do
         # 简化了输出路径的命名，去掉了无用的参数标识
-        output_path="evals_dream_dp_my${lora_model_name}/${TASKS_ARRAY[$i]}-ns${NSHOTS_ARRAY[$i]}-len${LENGTH_ARRAY[$i]}-temp${TEMP_ARRAY[$i]}-limit${LIMITS_ARRAY[$i]}-diffsteps${LENGTH_ARRAY[$i]}-blocklen${BLOCK_LENGTHS_ARRAY[$i]}-dpara${DPARALLELS_ARRAY[$i]}-thresh${THRESHOLDS_ARRAY[$i]}-topp${TOP_PS_ARRAY[$i]}-dtype${DTYPES_ARRAY[$i]}"
+        output_path="evals_dream_dp_my_new${lora_model_name}/${TASKS_ARRAY[$i]}-ns${NSHOTS_ARRAY[$i]}-len${LENGTH_ARRAY[$i]}-temp${TEMP_ARRAY[$i]}-limit${LIMITS_ARRAY[$i]}-diffsteps${LENGTH_ARRAY[$i]}-blocklen${BLOCK_LENGTHS_ARRAY[$i]}-dpara${DPARALLELS_ARRAY[$i]}-thresh${THRESHOLDS_ARRAY[$i]}-topp${TOP_PS_ARRAY[$i]}-dtype${DTYPES_ARRAY[$i]}"
         echo "Running Task evaluation for ${TASKS_ARRAY[$i]}..."
         echo "Task Config Output: $output_path"
         
