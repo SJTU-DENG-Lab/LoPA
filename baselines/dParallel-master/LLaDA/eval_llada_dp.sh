@@ -1,6 +1,10 @@
 # Set the environment variables first before running the command.
 export HF_ALLOW_CODE_EVAL=1
-export HF_DATASETS_TRUST_REMOTE_CODE=true
+export CURL_CA_BUNDLE=""
+export REQUESTS_CA_BUNDLE=""
+export HF_ENDPOINT="https://hf-mirror.com"
+export HF_HOME="/mnt/rl/xinyi/LoPA"
+
 ACCEL_CONFIG="accelerate_config.yaml"
 
 
@@ -16,7 +20,7 @@ output_path=evals_results/parallel/gsm8k-ns${num_fewshot}-${length}
 # dParallel
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29601 --config_file ${ACCEL_CONFIG} eval_llada.py --tasks ${task} --num_fewshot ${num_fewshot} \
 --confirm_run_unsafe_code --model llada_dist \
---model_args model_path='/home/chenkai/data/models/dParallel_LLaDA-8B-instruct',gen_length=${length},steps=${steps},block_length=${block_length},show_speed=True,threshold=0.5,task="gsm8k",save_dir="${output_path}" \
+--model_args model_path='/mnt/rl/xinyi/models/dParallel-LLaDA-8B-instruct',gen_length=${length},steps=${steps},block_length=${block_length},show_speed=True,threshold=0.5,task="gsm8k",save_dir="${output_path}" \
 --output_path ${output_path} --log_samples
 
 
@@ -38,7 +42,7 @@ output_path=evals_results/parallel/humaneval-ns${num_fewshot}-${length}
 # dparallel
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29601 --config_file ${ACCEL_CONFIG} eval_llada.py --tasks ${task} --num_fewshot ${num_fewshot} \
 --confirm_run_unsafe_code --model llada_dist \
---model_args model_path='/home/chenkai/data/models/dParallel_LLaDA-8B-instruct',gen_length=${length},steps=${steps},block_length=${block_length},threshold=0.5,show_speed=True,task="humaneval",save_dir="${output_path}" \
+--model_args model_path='/mnt/rl/xinyi/models/dParallel-LLaDA-8B-instruct',gen_length=${length},steps=${steps},block_length=${block_length},threshold=0.5,show_speed=True,task="humaneval",save_dir="${output_path}" \
 --output_path ${output_path} --log_samples
 
 ## NOTICE: use postprocess for humaneval
@@ -60,7 +64,7 @@ output_path=evals_results/parallel/mbpp-ns${num_fewshot}-${length}
 # parallel
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29601 --config_file ${ACCEL_CONFIG} eval_llada.py --tasks ${task} --num_fewshot ${num_fewshot} \
 --confirm_run_unsafe_code --model llada_dist \
---model_args model_path='/home/chenkai/data/models/dParallel_LLaDA-8B-instruct',gen_length=${length},steps=${steps},block_length=${block_length},threshold=0.45,show_speed=True,task="mbpp",save_dir="${output_path}" \
+--model_args model_path='/mnt/rl/xinyi/models/dParallel-LLaDA-8B-instruct',gen_length=${length},steps=${steps},block_length=${block_length},threshold=0.45,show_speed=True,task="mbpp",save_dir="${output_path}" \
 --output_path ${output_path} --log_samples
 
 ## NOTICE: use postprocess for mbpp
@@ -79,5 +83,5 @@ output_path=evals_results/parallel/minerva_math-ns${num_fewshot}-${length}
 # dParallel
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29601 --config_file ${ACCEL_CONFIG} eval_llada.py --tasks ${task} --num_fewshot ${num_fewshot} \
 --confirm_run_unsafe_code --model llada_dist \
---model_args model_path='/home/chenkai/data/models/dParallel_LLaDA-8B-instruct',gen_length=${length},steps=${steps},block_length=${block_length},show_speed=True,threshold=0.5,task="minerva_math",save_dir="${output_path}" \
+--model_args model_path='/mnt/rl/xinyi/models/dParallel-LLaDA-8B-instruct',gen_length=${length},steps=${steps},block_length=${block_length},show_speed=True,threshold=0.5,task="minerva_math",save_dir="${output_path}" \
 --output_path ${output_path} --log_samples

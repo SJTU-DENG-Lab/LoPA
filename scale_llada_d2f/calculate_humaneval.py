@@ -83,7 +83,7 @@ def process_file(jsonl_file, postprocess_script):
 
 def main():
     # 配置路径
-    root_dir = "/mnt/rl/xinyi/LoPA/baselines/klass_my/src/evals_dream_klassno"
+    root_dir = "/mnt/rl/xinyi/LoPA/scale_llada_d2f/results/eval_llada_chat_try7_fast_multi"
     postprocess_script = "/mnt/rl/xinyi/LoPA/scale_llada_d2f/postprocess_code.py"
     
     print(f"搜索目录: {root_dir}")
