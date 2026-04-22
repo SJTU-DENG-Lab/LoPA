@@ -84,19 +84,29 @@ class DecoderBase(ABC):
     def reset_statistics(self) -> None:
         self._total_forward_passes = 0
         self._total_generated_tokens = 0
+        self._total_actual_tokens_excluding_eos = 0
         self._total_generation_time = 0.0
         self._total_samples = 0
 
     def _record_forward_pass(self, count: int = 1) -> None:
         self._total_forward_passes += max(count, 0)
 
-    def _record_generation(self, generated_tokens: int, elapsed_time: float) -> None:
+    def _record_generation(
+        self,
+        generated_tokens: int,
+        elapsed_time: float,
+        actual_tokens_excluding_eos: Optional[int] = None,
+    ) -> None:
         self._total_generated_tokens += max(generated_tokens, 0)
+        if actual_tokens_excluding_eos is None:
+            actual_tokens_excluding_eos = generated_tokens
+        self._total_actual_tokens_excluding_eos += max(actual_tokens_excluding_eos, 0)
         self._total_generation_time += max(elapsed_time, 0.0)
         self._total_samples += 1
 
     def get_statistics(self) -> Dict[str, float]:
         total_tokens = self._total_generated_tokens
+        total_actual_tokens = self._total_actual_tokens_excluding_eos
         total_time = self._total_generation_time
         total_forward = self._total_forward_passes
         total_samples = self._total_samples
@@ -108,6 +118,7 @@ class DecoderBase(ABC):
         return {
             "total_samples": total_samples,
             "total_generated_tokens": total_tokens,
+            "total_actual_tokens_excluding_eos": total_actual_tokens,
             "total_forward_passes": total_forward,
             "total_generation_time": total_time,
             "avg_tokens_per_sample": avg_tokens,
@@ -275,14 +286,40 @@ Can you complete the following Python function?
             confidence = torch.sum(probs * log_probs, dim=-1)
         return confidence, x0, initial_confidence
 
-    def _count_non_eos_tokens_before_truncation(self, generated_sequence, prompt_length, pad_token_id):
+    def _generation_eos_token_ids(self):
+        eos_ids = []
+        for token_id in (self.tokenizer.pad_token_id, self.tokenizer.eos_token_id):
+            if token_id is not None and token_id not in eos_ids:
+                eos_ids.append(token_id)
+        return eos_ids
+
+    def _compute_generation_token_stats(self, generated_sequence, prompt_length=0):
         generated_tokens = generated_sequence[prompt_length:]
-        if pad_token_id is not None:
-            generated_tokens_list = generated_tokens.tolist() if hasattr(generated_tokens, 'tolist') else generated_tokens
-            non_eos_count = sum(1 for token in generated_tokens_list if token != pad_token_id)
-        else:
-            non_eos_count = len(generated_tokens)
-        return non_eos_count
+        generated_ids = generated_tokens.tolist() if hasattr(generated_tokens, 'tolist') else list(generated_tokens)
+
+        generated_ids_including_eos = [
+            token_id for token_id in generated_ids if token_id != self.mask_token_id
+        ]
+
+        eos_token_ids = self._generation_eos_token_ids()
+        eos_positions = [
+            generated_ids.index(token_id)
+            for token_id in eos_token_ids
+            if token_id in generated_ids
+        ]
+        actual_generated_ids = generated_ids[:min(eos_positions)] if eos_positions else generated_ids
+        actual_ids = [
+            token_id for token_id in actual_generated_ids if token_id != self.mask_token_id
+        ]
+
+        return actual_ids, len(actual_ids), len(generated_ids_including_eos)
+
+    def _count_non_eos_tokens_before_truncation(self, generated_sequence, prompt_length, pad_token_id):
+        _, _, generated_tokens_including_eos = self._compute_generation_token_stats(
+            generated_sequence,
+            prompt_length,
+        )
+        return generated_tokens_including_eos
 
     def _update_block_completion_states(self, block_states, decoded_token_threshold):
         for block_id in sorted(block_states.keys()):
@@ -525,12 +562,15 @@ Can you complete the following Python function?
                     break
 
         generated_sequence_ids = x_t[0, prompt_length:].tolist()
-        non_eos_tokens = self._count_non_eos_tokens_before_truncation(
+        _, actual_tokens_excluding_eos, generated_tokens_including_eos = self._compute_generation_token_stats(
             generated_sequence_ids,
             0,
-            self.tokenizer.pad_token_id
         )
-        self._record_generation(non_eos_tokens, time.time() - start_time)
+        self._record_generation(
+            generated_tokens_including_eos,
+            time.time() - start_time,
+            actual_tokens_excluding_eos,
+        )
 
         decoded_text = self.tokenizer.decode(generated_sequence_ids)
         pad_token = self.tokenizer.pad_token
@@ -567,6 +607,7 @@ class DiffuCoderBasic(DiffuCoder):
         # Basic variant should only load the base model (no LoRA).
         requested_device = kwargs.pop("device", "auto")
         self.max_length = kwargs.pop("max_length", 2048)
+        token_per_step = kwargs.pop("token_per_step", 1)
         
         # [FIX] Also pop DiffuCoder-specific args here to prevent them reaching DecoderBase
         # even if DiffuCoderBasic might not use all of them, generating via make_model passes them.
@@ -592,7 +633,7 @@ class DiffuCoderBasic(DiffuCoder):
         self.sampling_strategy = "default"
 
         # basic generation hyperparams
-        self.basic_token_per_step = max(1, int(kwargs.pop("token_per_step", 1)))
+        self.basic_token_per_step = max(1, int(token_per_step))
         self.basic_alg = kwargs.pop("basic_alg", "entropy")
         self.basic_alg_temp = kwargs.pop("basic_alg_temp", 0.0)
         self.basic_top_p = kwargs.pop("basic_top_p", 0.95)
@@ -640,10 +681,16 @@ class DiffuCoderBasic(DiffuCoder):
             prompt_len = input_ids[0].shape[-1]
             gen_ids = seq[prompt_len:].tolist()
 
-            non_eos_tokens = self._count_non_eos_tokens_before_truncation(
-                gen_ids, 0, self.tokenizer.pad_token_id
+            _, actual_tokens_excluding_eos, _ = self._compute_generation_token_stats(
+                gen_ids,
+                0,
             )
-            self._record_generation(non_eos_tokens, elapsed)
+            generated_tokens_including_eos = self.max_new_tokens
+            self._record_generation(
+                generated_tokens_including_eos,
+                elapsed,
+                actual_tokens_excluding_eos,
+            )
 
             decoded_text = self.tokenizer.decode(gen_ids, skip_special_tokens=False)
             pad_token = self.tokenizer.pad_token
@@ -907,8 +954,15 @@ class DiffuCoderParallel(DiffuCoder):
         
         if not self.use_uncertainty_logic:
             generated_ids, stats = self._generate_original_single_branch(prompt)
-            non_pad_tokens = sum(1 for t in generated_ids if t != self.pad_token_id) if self.pad_token_id is not None else len(generated_ids)
-            self._record_generation(non_pad_tokens, time.time() - start_time)
+            _, actual_tokens_excluding_eos, generated_tokens_including_eos = self._compute_generation_token_stats(
+                generated_ids,
+                0,
+            )
+            self._record_generation(
+                generated_tokens_including_eos,
+                time.time() - start_time,
+                actual_tokens_excluding_eos,
+            )
             return generated_ids, stats.get("steps_taken", 0), len(generated_ids), stats
 
         self.shared_past_key_values = None; self.shared_last_logits = None
@@ -1087,8 +1141,15 @@ class DiffuCoderParallel(DiffuCoder):
         generated_ids = best_branch.x_t[0, prompt_length:].tolist()
         best_steps = best_branch.steps_completed if best_branch.steps_completed != -1 else run_stats["parallel_steps"]
         best_tokens = best_branch.generated_token_count
-        non_pad_tokens = sum(1 for t in generated_ids if t != self.pad_token_id) if self.pad_token_id is not None else len(generated_ids)
-        self._record_generation(non_pad_tokens, time.time() - start_time)
+        _, actual_tokens_excluding_eos, generated_tokens_including_eos = self._compute_generation_token_stats(
+            generated_ids,
+            0,
+        )
+        self._record_generation(
+            generated_tokens_including_eos,
+            time.time() - start_time,
+            actual_tokens_excluding_eos,
+        )
         return generated_ids, best_steps, best_tokens, run_stats
 
     def codegen(self, prompt: str, do_sample: bool = True, num_samples: int = 200) -> List[str]:
@@ -1181,7 +1242,7 @@ Can you complete the following Python function?
 def make_model(
     model_type: str, model_size: str, model_path: str, batch_size: int = 1,
     temperature: float = 0.8, dataset: str = None, tensor_parallel_size: int = 1,
-    device: str = "auto", **kwargs,
+    device: str = "auto", max_new_tokens: int = 512, **kwargs,
 ):
     if model_type == "codeqwen" or model_type == "qwen2":
         if "chat" in model_size.lower():
@@ -1192,15 +1253,16 @@ def make_model(
         else:
             return VLlmDecoder(batch_size=batch_size, name=model_path, temperature=temperature, dataset=dataset, tensor_parallel_size=tensor_parallel_size)
     elif model_type == "diffucoder":
-        return DiffuCoder(batch_size=batch_size, name=model_path, temperature=temperature, dataset=dataset, device=device, **kwargs)
+        return DiffuCoder(batch_size=batch_size, name=model_path, temperature=temperature, max_new_tokens=max_new_tokens, dataset=dataset, device=device, **kwargs)
     elif model_type == "diffucoder_basic":
         # model_path should be the base model path only
-        return DiffuCoderBasic(batch_size=batch_size, name=model_path, temperature=temperature, dataset=dataset, device=device, **kwargs)
+        return DiffuCoderBasic(batch_size=batch_size, name=model_path, temperature=temperature, max_new_tokens=max_new_tokens, dataset=dataset, device=device, **kwargs)
     elif model_type == "diffucoder_parallel":
         return DiffuCoderParallel(
             batch_size=batch_size,
             name=model_path,
             temperature=temperature,
+            max_new_tokens=max_new_tokens,
             dataset=dataset,
             device=device,
             **kwargs,

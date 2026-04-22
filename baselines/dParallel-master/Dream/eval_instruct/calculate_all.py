@@ -174,7 +174,7 @@ def process_folder(folder_path: str, verbose: bool = True) -> bool:
 def main():
     parser = argparse.ArgumentParser(description="汇总基于 DiffLLM 生成的统计文件并计算整体 TPF")
     # 默认路径可以改成你运行 lm-eval 时的保存路径，比如 "generation_stats"
-    parser.add_argument("root_path", nargs='?', default="/home/chenkai/data/dParallel-master/Dream/eval_instruct/evals_dream_dp_my", 
+    parser.add_argument("root_path", nargs='?', default="/home/chenkai/data/LoPA/baselines/dParallel-master/Dream/eval_instruct/evals_dream_dp_my_new", 
                         help="要搜索的根目录路径")
     parser.add_argument("-v", "--verbose", action="store_true", default=True,
                         help="显示详细输出")

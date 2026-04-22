@@ -71,6 +71,7 @@ def construct_contract_prompt(prompt: str, contract_type: str, contract: str) ->
 def code_generate(args, workdir: PathLike, model: DecoderBase, id_range=None):
     model.reset_statistics()
     run_start = time.time()
+    responses = []
 
     with Progress(
         TextColumn(f"{args.dataset} •" + "[progress.percentage]{task.percentage:>3.0f}%"),
@@ -122,6 +123,7 @@ def code_generate(args, workdir: PathLike, model: DecoderBase, id_range=None):
                     if "```" in impl:
                         impl = impl.split("```")[0]
                         print("``` exist in generation. Please check the generation results.")
+                    responses.append(impl)
 
                     try:
                         with open(
@@ -140,6 +142,7 @@ def code_generate(args, workdir: PathLike, model: DecoderBase, id_range=None):
     stats = model.get_statistics()
     total_samples = stats.get("total_samples", 0)
     total_tokens = stats.get("total_generated_tokens", 0)
+    total_actual_tokens = stats.get("total_actual_tokens_excluding_eos", 0)
     total_forward = stats.get("total_forward_passes", 0)
     tracked_time = stats.get("total_generation_time", 0.0)
     wall_time = time.time() - run_start
@@ -154,6 +157,7 @@ def code_generate(args, workdir: PathLike, model: DecoderBase, id_range=None):
         "model": str(model),
         "total_samples": total_samples,
         "total_generated_tokens": total_tokens,
+        "total_actual_tokens_excluding_eos": total_actual_tokens,
         "total_forward_passes": total_forward,
         "total_generation_time": tracked_time,
         "wall_time_seconds": wall_time,
@@ -169,6 +173,37 @@ def code_generate(args, workdir: PathLike, model: DecoderBase, id_range=None):
 
     print(f"Saved generation metrics to {metrics_path}")
 
+    save_dir = args.save_dir or workdir
+    os.makedirs(save_dir, exist_ok=True)
+
+    responses_path = os.path.join(save_dir, "rank_0_responses.jsonl")
+    with open(responses_path, "w", encoding="utf-8") as responses_file:
+        for response in responses:
+            responses_file.write(json.dumps(response, ensure_ascii=False) + "\n")
+
+    rank_stats = {
+        "processed_samples": int(total_samples),
+        "total_samples": int(total_samples),
+        "total_generated_tokens_including_eos": int(total_tokens),
+        "total_actual_tokens_excluding_eos": int(total_actual_tokens),
+        "total_parallel_steps": int(total_forward),
+        "total_time": wall_time,
+        "generated_tokens_including_eos_per_second": float(total_tokens) / wall_time if wall_time > 0 else 0.0,
+        "actual_tokens_excluding_eos_per_second": float(total_actual_tokens) / wall_time if wall_time > 0 else 0.0,
+        "generated_tokens_including_eos_per_step": float(total_tokens) / float(total_forward) if total_forward > 0 else 0.0,
+        "actual_tokens_excluding_eos_per_step": float(total_actual_tokens) / float(total_forward) if total_forward > 0 else 0.0,
+        "timestamp": time.time(),
+        "rank": 0,
+        "world_size": 1,
+    }
+
+    stats_path = os.path.join(save_dir, "rank_0_stats.json")
+    with open(stats_path, "w", encoding="utf-8") as stats_file:
+        json.dump(rank_stats, stats_file, ensure_ascii=False, indent=2)
+
+    print(f"Saved rank-0 responses to {responses_path}")
+    print(f"Saved rank-0 stats to {stats_path}")
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -180,8 +215,10 @@ def main():
     parser.add_argument("--dataset", required=True, type=str, choices=["humaneval", "mbpp"])
     parser.add_argument("--root", type=str, required=True)
     parser.add_argument("--n_samples", default=1, type=int)
+    parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--output", type=str)
+    parser.add_argument("--save-dir", type=str, default=None)
     parser.add_argument("--tensor-parallel-size", default=1, type=int)
     parser.add_argument(
         "--contract-type",
@@ -210,6 +247,7 @@ def main():
     parser.add_argument("--block-add-threshold", type=float, default=0.3, help="Threshold to add new block")
     parser.add_argument("--skip-threshold", type=float, default=0.95, help="Confidence threshold to skip decoding")
     parser.add_argument("--decoded-token-threshold", type=float, default=0.95, help="Threshold to mark block as complete")
+    parser.add_argument("--basic-token-per-step", type=int, default=1, help="Tokens generated per step for diffucoder_basic")
 
     args = parser.parse_args()
     print(args)
@@ -283,6 +321,11 @@ def main():
             "top_p": args.parallel_top_p,
             "top_k": args.parallel_top_k,
         }
+    basic_kwargs = {}
+    if args.model_type == "diffucoder_basic":
+        basic_kwargs = {
+            "token_per_step": args.basic_token_per_step,
+        }
 
     model = make_model(
         model_type=args.model_type,
@@ -290,6 +333,7 @@ def main():
         model_path=model_path,
         batch_size=args.bs,
         temperature=args.temperature,
+        max_new_tokens=args.max_new_tokens,
         dataset=args.dataset,
         tensor_parallel_size=args.tensor_parallel_size,
         device=args.device,
@@ -298,6 +342,7 @@ def main():
         block_add_threshold=args.block_add_threshold,
         skip_threshold=args.skip_threshold,
         decoded_token_threshold=args.decoded_token_threshold,
+        **basic_kwargs,
         **parallel_kwargs,
     )
 

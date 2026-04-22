@@ -12,3 +12,4 @@ baselines/klass_my/src/evals_dream_klassno
 baselines/klass_my/src/evals_results
 baselines/dParallel-master/LLaDA/evals_results
 baselines/dParallel-master/Dream/eval_instruct/evals_dream_dp_my_new
+scale_diffucoder_d2f/results
