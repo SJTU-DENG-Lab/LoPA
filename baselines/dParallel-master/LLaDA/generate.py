@@ -86,9 +86,15 @@ def get_transfer_index(logits, temperature, remasking, mask_index, x, num_transf
     return x0, transfer_index
 
 
+def _block_has_eos(x, block_start, block_end, eos_token_id):
+    if eos_token_id is None:
+        return False
+    return (x[:, block_start:block_end] == eos_token_id).any().item()
+
+
 @ torch.no_grad()
 def generate(model, prompt, steps=128, gen_length=128, block_length=128, temperature=0.,
-             remasking='low_confidence', mask_id=126336, threshold=None):
+             remasking='low_confidence', mask_id=126336, threshold=None, eos_token_id=None):
     '''
     Args:
         model: Mask predictor.
@@ -130,9 +136,10 @@ def generate(model, prompt, steps=128, gen_length=128, block_length=128, tempera
             i += 1
             if (x[:, prompt.shape[1] + num_block * block_length: prompt.shape[1] + (num_block + 1) * block_length] == mask_id).sum() == 0:
                 break
-        # if x[:, prompt.shape[1] + (num_block + 1) * block_length-1] == 126081:
-        #     x[:, prompt.shape[1] + (num_block + 1) * block_length:] = 126081
-        #     break
+        current_block_start = prompt.shape[1] + num_block * block_length
+        current_block_end = prompt.shape[1] + (num_block + 1) * block_length
+        if _block_has_eos(x, current_block_start, current_block_end, eos_token_id):
+            break
     return x, nfe
 
 def get_transfer_index_entropy(logits, temperature, remasking, mask_index, x, num_transfer_tokens, entropy_threshold=None):
@@ -180,7 +187,7 @@ def get_transfer_index_entropy(logits, temperature, remasking, mask_index, x, nu
 
 @ torch.no_grad()
 def generate_with_prefix_cache(model, prompt, steps=128, gen_length=128, block_length=128, temperature=0.,
-             remasking='low_confidence', mask_id=126336, threshold=None):
+             remasking='low_confidence', mask_id=126336, threshold=None, eos_token_id=None):
     '''
     Args:
         model: Mask predictor.
@@ -246,13 +253,15 @@ def generate_with_prefix_cache(model, prompt, steps=128, gen_length=128, block_l
                 break
             i += 1
 
+        if _block_has_eos(x, current_block_start, current_block_end, eos_token_id):
+            break
 
     return x, nfe
 
 
 @ torch.no_grad()
 def generate_with_dual_cache(model, prompt, steps=128, gen_length=128, block_length=128, temperature=0.,
-            remasking='low_confidence', mask_id=126336, threshold=None):
+            remasking='low_confidence', mask_id=126336, threshold=None, eos_token_id=None):
     '''
     Args:
         model: Mask predictor.
@@ -306,6 +315,9 @@ def generate_with_dual_cache(model, prompt, steps=128, gen_length=128, block_len
             if (x[:, current_block_start:current_block_end] == mask_id).sum() == 0:
                 break
             i += 1
+
+        if _block_has_eos(x, current_block_start, current_block_end, eos_token_id):
+            break
 
     return x, nfe
 

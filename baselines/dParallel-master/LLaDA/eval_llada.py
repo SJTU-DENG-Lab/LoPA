@@ -359,13 +359,13 @@ class LLaDAEvalHarness(LM):
             if self.use_cache:
                 if self.dual_cache:
                     generated_answer, nfe = generate_with_dual_cache(self.model, input_ids, steps=self.steps, gen_length=self.gen_length, block_length=self.block_length, 
-                                        temperature=0, remasking=self.remasking, mask_id=self.mask_id, threshold=self.threshold)
+                                        temperature=0, remasking=self.remasking, mask_id=self.mask_id, threshold=self.threshold, eos_token_id=self.tokenizer.eos_token_id)
                 else:
                     generated_answer, nfe = generate_with_prefix_cache(self.model, input_ids, steps=self.steps, gen_length=self.gen_length, block_length=self.block_length, 
-                                        temperature=0, remasking=self.remasking, mask_id=self.mask_id, threshold=self.threshold)
+                                        temperature=0, remasking=self.remasking, mask_id=self.mask_id, threshold=self.threshold, eos_token_id=self.tokenizer.eos_token_id)
             else:
                 generated_answer, nfe = generate(self.model, input_ids, steps=self.steps, gen_length=self.gen_length, block_length=self.block_length, 
-                                        temperature=0, remasking=self.remasking, mask_id=self.mask_id, threshold=self.threshold)
+                                        temperature=0, remasking=self.remasking, mask_id=self.mask_id, threshold=self.threshold, eos_token_id=self.tokenizer.eos_token_id)
 
             generated_sequence = generated_answer
             actual_ids, actual_tokens_excluding_eos, generated_tokens_including_eos = (

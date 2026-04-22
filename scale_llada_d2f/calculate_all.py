@@ -242,7 +242,7 @@ def process_folder(folder_path: str, verbose: bool = True) -> bool:
 
 def main():
     parser = argparse.ArgumentParser(description="汇总 rank 统计文件并计算两种 token 口径下的 tps/tpf (兼容新旧格式)")
-    parser.add_argument("--root_path", nargs='?', default="/mnt/rl/xinyi/LoPA", 
+    parser.add_argument("--root_path", nargs='?', default="/home/chenkai/data/LoPA/baselines/dParallel-master", 
                         help="要搜索的根目录路径")
     parser.add_argument("-v", "--verbose", action="store_true", 
                         help="显示详细输出")

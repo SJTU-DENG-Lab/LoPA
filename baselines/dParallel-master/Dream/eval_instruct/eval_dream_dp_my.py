@@ -970,17 +970,19 @@ class DreamModel(LM):
         eos_token_id = self.tokenizer.eos_token_id
         mask_token_id = self.mask_token_id
 
-        if eos_token_id is not None and eos_token_id in generated_ids:
-            eos_pos = generated_ids.index(eos_token_id)
-            generated_ids = generated_ids[: eos_pos + 1]
-
         generated_ids_including_eos = [
             token_id for token_id in generated_ids if token_id != mask_token_id
         ]
+
+        actual_generated_ids = generated_ids
+        if eos_token_id is not None and eos_token_id in actual_generated_ids:
+            eos_pos = actual_generated_ids.index(eos_token_id)
+            actual_generated_ids = actual_generated_ids[:eos_pos]
+
         actual_ids = [
             token_id
-            for token_id in generated_ids_including_eos
-            if eos_token_id is None or token_id != eos_token_id
+            for token_id in actual_generated_ids
+            if token_id != mask_token_id
         ]
 
         actual_tokens_excluding_eos = len(actual_ids)
