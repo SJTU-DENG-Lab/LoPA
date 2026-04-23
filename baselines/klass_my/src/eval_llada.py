@@ -308,7 +308,9 @@ class LLaDAEvalHarness(LM):
             actual_ids = actual_ids[: actual_ids.index(eos_token_id)]
 
         actual_tokens_excluding_eos = len(actual_ids)
-        generated_tokens_including_eos = int(generated_length)
+        generated_tokens_including_eos = sum(
+            token_id != self.mask_id for token_id in generated_ids
+        )
         return actual_ids, actual_tokens_excluding_eos, generated_tokens_including_eos
     
     

@@ -31,7 +31,7 @@ dtypes="bfloat16 bfloat16 bfloat16"
 # limits="10000"
 # dtypes="bfloat16"
 
-model=/mnt/rl/xinyi/models/Dream-v0-Instruct-7B
+model=/home/chenkai/data/models/Dream-v0-Instruct-7B
 # Create arrays from space-separated strings
 read -ra TASKS_ARRAY <<< "$tasks"
 read -ra NSHOTS_ARRAY <<< "$nshots"
@@ -50,10 +50,10 @@ if [[ ${#TASKS_ARRAY[@]} != ${#NSHOTS_ARRAY[@]} || ${#TASKS_ARRAY[@]} != ${#LENG
 fi
 
 export HF_ALLOW_CODE_EVAL=1
-export CURL_CA_BUNDLE=""
-export REQUESTS_CA_BUNDLE=""
+# export CURL_CA_BUNDLE=""
+# export REQUESTS_CA_BUNDLE=""
 export HF_ENDPOINT="https://hf-mirror.com"
-export HF_HOME="/mnt/rl/xinyi/LoPA"
+# export HF_HOME="/mnt/rl/xinyi/LoPA"
 
 
 output_path=results/evals_results_instruct_block_new/humaneval-ns0-256-dtype${DTYPES_ARRAY[0]}-limit${LIMITS_ARRAY[0]}-temp0

@@ -1,0 +1,7 @@
+{
+    "rank": 0,
+    "total_nfe": 5376,
+    "total_non_eos_tokens": 2016,
+    "latency_seconds": 338.1510257720947,
+    "avg_nfe_per_token": 2.6666666666666665
+}

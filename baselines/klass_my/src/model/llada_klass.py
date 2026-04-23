@@ -68,6 +68,13 @@ def stable_confident_decode(
     p_prev = torch.zeros((1, x.shape[1], V), dtype=torch.float64, device=x.device)
 
     all_step_outputs = []
+    eos_token_id = getattr(tokenizer, "eos_token_id", None)
+    if eos_token_id is not None:
+        eos_token_tensor = torch.tensor(eos_token_id, device=x.device, dtype=torch.long)
+        if eos_token_tensor.ndim == 0:
+            eos_token_tensor = eos_token_tensor.unsqueeze(0)
+    else:
+        eos_token_tensor = None
 
     for num_block in range(num_blocks):
         block_start = input_ids_original.shape[1] + num_block * block_length
@@ -209,6 +216,11 @@ def stable_confident_decode(
                 all_step_outputs.append(step_out)
 
             used_steps += 1
+
+        if eos_token_tensor is not None:
+            current_block_tokens = x[:, block_start:block_end]
+            if torch.isin(current_block_tokens, eos_token_tensor).any():
+                break
 
     if step_save_dir:
         all_steps_path = os.path.join(step_save_dir, f"all_steps_{example_idx}.json")

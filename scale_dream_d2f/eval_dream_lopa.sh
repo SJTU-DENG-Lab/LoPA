@@ -3,13 +3,13 @@
 # ==============================================================================
 # 模型路径和通用配置
 # ==============================================================================
-model="/mnt/rl/xinyi/models/Dream-v0-Instruct-7B"
+model="/home/chenkai/data/models/Dream-v0-Instruct-7B"
 
 export HF_ALLOW_CODE_EVAL=1
-export CURL_CA_BUNDLE=""
-export REQUESTS_CA_BUNDLE=""
+# export CURL_CA_BUNDLE=""
+# export REQUESTS_CA_BUNDLE=""
 export HF_ENDPOINT="https://hf-mirror.com"
-export HF_HOME="/mnt/rl/xinyi/LoPA"
+# export HF_HOME="/mnt/rl/xinyi/LoPA"
 
 SCRIPT_NAME="eval_dream_lopa_earlystopnew.py"
 
