@@ -56,10 +56,10 @@ export HF_ENDPOINT="https://hf-mirror.com"
 export HF_HOME="/mnt/rl/xinyi/LoPA"
 
 
-output_path=results/evals_results_instruct_block_new/humaneval-ns0-512-dtype${DTYPES_ARRAY[0]}-limit${LIMITS_ARRAY[0]}-temp0
+output_path=results/evals_results_instruct_block_new/humaneval-ns0-256-dtype${DTYPES_ARRAY[0]}-limit${LIMITS_ARRAY[0]}-temp0
 
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29510 --num_processes 8 eval_dream_block_visualnew.py --model dream \
-    --model_args pretrained=${model},max_new_tokens=512,diffusion_steps=512,temperature=0,top_p=0.95,add_bos_token=true,escape_until=true,dtype=${DTYPES_ARRAY[0]},save_dir=${output_path} \
+    --model_args pretrained=${model},max_new_tokens=256,diffusion_steps=512,temperature=0,top_p=0.95,add_bos_token=true,escape_until=true,dtype=${DTYPES_ARRAY[0]},save_dir=${output_path} \
     --tasks humaneval \
     --num_fewshot 0 \
     --batch_size 1 \

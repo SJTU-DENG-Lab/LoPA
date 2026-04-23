@@ -20,10 +20,10 @@ thresholds="0.45 0.5 0.45"  # threshold参数
 # HumanEval参数配置列表
 # ==========================================
 humaneval_nshots="0"  # HumanEval的few-shot数量
-humaneval_lengths="512"  # HumanEval的生成长度
+humaneval_lengths="256"  # HumanEval的生成长度
 humaneval_temperatures="0"  # HumanEval的温度参数
 humaneval_limits="10000"  # HumanEval的生成限制
-humaneval_diffusion_steps="512"  # HumanEval的扩散步数
+humaneval_diffusion_steps="256"  # HumanEval的扩散步数
 humaneval_top_ps="0.9"  # HumanEval的top_p参数
 humaneval_dtypes="bfloat16"  # HumanEval的dtype参数
 # --- 新增/修改的超参数 ---
@@ -120,7 +120,7 @@ for lora_model in "${lora_models[@]}"; do
     # HumanEval评估（参数列表遍历）
     for i in "${!HUMANEVAL_NSHOTS_ARRAY[@]}"; do
         # 简化了输出路径的命名，去掉了无用的参数标识
-        output_path="evals_dream_dp_my_new${lora_model_name}/humaneval-ns${HUMANEVAL_NSHOTS_ARRAY[$i]}-len${HUMANEVAL_LENGTHS_ARRAY[$i]}-temp${HUMANEVAL_TEMP_ARRAY[$i]}-limit${HUMANEVAL_LIMITS_ARRAY[$i]}-diffsteps${HUMANEVAL_DIFFUSION_STEPS_ARRAY[$i]}-blocklen${HUMANEVAL_BLOCK_LENGTHS_ARRAY[$i]}-dpara${HUMANEVAL_DPARALLELS_ARRAY[$i]}-thresh${HUMANEVAL_THRESHOLDS_ARRAY[$i]}-topp${HUMANEVAL_TOP_PS_ARRAY[$i]}-dtype${HUMANEVAL_DTYPES_ARRAY[$i]}"
+        output_path="evals_dream_dp_my_new${lora_model_name}/humaneval-ns${HUMANEVAL_NSHOTS_ARRAY[$i]}-len${HUMANEVAL_LENGTHS_ARRAY[$i]}-temp${HUMANEVAL_TEMP_ARRAY[$i]}-limit${HUMANEVAL_LIMITS_ARRAY[$i]}-diffsteps${HUMANEVAL_DIFFUSION_STEPS_ARRAY[$i]}-blocklen${HUMANEVAL_BLOCK_LENGTHS_ARRAY[$i]}-dpara${HUMANEVAL_DPARALLELS_ARRAY[$i]}-thresh${HUMANEVAL_THRESHOLDS_ARRAY[$i]}-topp${HUMANEVAL_TOP_PS_ARRAY[$i]}-dtype${HUMANEVAL_DTYPES_ARRAY[$i]}-max_new_tokens${HUMANEVAL_LENGTHS_ARRAY[$i]}"
         echo "Running HumanEval evaluation $((i+1))/${humaneval_array_length} for $lora_model_name..."
         echo "HumanEval Config Output: $output_path"
         
@@ -160,15 +160,15 @@ for lora_model in "${lora_models[@]}"; do
             model_args="${base_args},top_p=${TOP_PS_ARRAY[$i]}"
         fi
         
-        CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29520 --num_processes 8 eval_dream_dp_my.py --model dream_lora \
-            --model_args $model_args \
-            --tasks ${TASKS_ARRAY[$i]} \
-            --limit ${LIMITS_ARRAY[$i]} \
-            --num_fewshot ${NSHOTS_ARRAY[$i]} \
-            --batch_size 1 \
-            --output_path $output_path \
-            --log_samples \
-            --confirm_run_unsafe_code
+        # CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29520 --num_processes 8 eval_dream_dp_my.py --model dream_lora \
+        #     --model_args $model_args \
+        #     --tasks ${TASKS_ARRAY[$i]} \
+        #     --limit ${LIMITS_ARRAY[$i]} \
+        #     --num_fewshot ${NSHOTS_ARRAY[$i]} \
+        #     --batch_size 1 \
+        #     --output_path $output_path \
+        #     --log_samples \
+        #     --confirm_run_unsafe_code
     done
 done
 

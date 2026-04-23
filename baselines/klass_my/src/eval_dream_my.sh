@@ -43,10 +43,10 @@ history_lengths="2 2 2" # 历史长度阈值
 # HumanEval参数配置列表
 # ==========================================
 humaneval_nshots="0"  # HumanEval的few-shot数量
-humaneval_lengths="512"  # HumanEval的生成长度
+humaneval_lengths="256"  # HumanEval的生成长度
 humaneval_temperatures="0.2"  # HumanEval的温度参数
 humaneval_limits="10000"  # HumanEval的生成限制
-humaneval_diffusion_steps="512"  # HumanEval的扩散步数
+humaneval_diffusion_steps="256"  # HumanEval的扩散步数
 humaneval_block_sizes="32"  # HumanEval的块大小
 humaneval_block_add_thresholds="0.1"  # HumanEval的块添加阈值
 humaneval_decoded_token_thresholds="0.95"  # HumanEval的解码token阈值
@@ -174,7 +174,7 @@ for lora_model in "${lora_models[@]}"; do
     
     # HumanEval评估（参数列表遍历）
     for i in "${!HUMANEVAL_NSHOTS_ARRAY[@]}"; do
-        output_path="evals_dream_klass${lora_model_name}/humaneval-ns${HUMANEVAL_NSHOTS_ARRAY[$i]}-len${HUMANEVAL_LENGTHS_ARRAY[$i]}-temp${HUMANEVAL_TEMP_ARRAY[$i]}-limit${HUMANEVAL_LIMITS_ARRAY[$i]}-diffsteps${HUMANEVAL_DIFFUSION_STEPS_ARRAY[$i]}-block${HUMANEVAL_BLOCK_SIZES_ARRAY[$i]}-thresh${HUMANEVAL_BLOCK_ADD_THRESHOLDS_ARRAY[$i]}-decodethresh${HUMANEVAL_DECODED_TOKEN_THRESHOLDS_ARRAY[$i]}-skip${HUMANEVAL_SKIP_THRESHOLDS_ARRAY[$i]}-topp${HUMANEVAL_TOP_PS_ARRAY[$i]}-dtype${HUMANEVAL_DTYPES_ARRAY[$i]}-sampling${HUMANEVAL_SAMPLING_STRATEGIES_ARRAY[$i]}-unmask${HUMANEVAL_UNMASK_STRATEGIES_ARRAY[$i]}-conf${HUMANEVAL_CONF_THRESHOLDS_ARRAY[$i]}-kl${HUMANEVAL_KL_THRESHOLDS_ARRAY[$i]}-hist${HUMANEVAL_HISTORY_LENGTHS_ARRAY[$i]}"
+        output_path="evals_dream_klass${lora_model_name}/humaneval-ns${HUMANEVAL_NSHOTS_ARRAY[$i]}-len${HUMANEVAL_LENGTHS_ARRAY[$i]}-temp${HUMANEVAL_TEMP_ARRAY[$i]}-limit${HUMANEVAL_LIMITS_ARRAY[$i]}-diffsteps${HUMANEVAL_DIFFUSION_STEPS_ARRAY[$i]}-block${HUMANEVAL_BLOCK_SIZES_ARRAY[$i]}-thresh${HUMANEVAL_BLOCK_ADD_THRESHOLDS_ARRAY[$i]}-decodethresh${HUMANEVAL_DECODED_TOKEN_THRESHOLDS_ARRAY[$i]}-skip${HUMANEVAL_SKIP_THRESHOLDS_ARRAY[$i]}-topp${HUMANEVAL_TOP_PS_ARRAY[$i]}-dtype${HUMANEVAL_DTYPES_ARRAY[$i]}-sampling${HUMANEVAL_SAMPLING_STRATEGIES_ARRAY[$i]}-unmask${HUMANEVAL_UNMASK_STRATEGIES_ARRAY[$i]}-conf${HUMANEVAL_CONF_THRESHOLDS_ARRAY[$i]}-kl${HUMANEVAL_KL_THRESHOLDS_ARRAY[$i]}-hist${HUMANEVAL_HISTORY_LENGTHS_ARRAY[$i]}-max_new_tokens${HUMANEVAL_LENGTHS_ARRAY[$i]}"
         echo "Running HumanEval evaluation $((i+1))/${humaneval_array_length} for $lora_model_name..."
         echo "HumanEval Config Output: $output_path"
         
@@ -213,15 +213,15 @@ for lora_model in "${lora_models[@]}"; do
             model_args="${base_args},top_p=${TOP_PS_ARRAY[$i]}"
         fi
         
-        CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29520 --num_processes 8 eval_dream_my.py --model dream_lora \
-            --model_args $model_args \
-            --tasks ${TASKS_ARRAY[$i]} \
-            --limit ${LIMITS_ARRAY[$i]} \
-            --num_fewshot ${NSHOTS_ARRAY[$i]} \
-            --batch_size 1 \
-            --output_path $output_path \
-            --log_samples \
-            --confirm_run_unsafe_code
+        # CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --main_process_port 29520 --num_processes 8 eval_dream_my.py --model dream_lora \
+        #     --model_args $model_args \
+        #     --tasks ${TASKS_ARRAY[$i]} \
+        #     --limit ${LIMITS_ARRAY[$i]} \
+        #     --num_fewshot ${NSHOTS_ARRAY[$i]} \
+        #     --batch_size 1 \
+        #     --output_path $output_path \
+        #     --log_samples \
+        #     --confirm_run_unsafe_code
     done
 done
 
