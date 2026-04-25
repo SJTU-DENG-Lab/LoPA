@@ -17,7 +17,7 @@ unmask_strategy=all
 conf_threshold=0.6
 kl_threshold=0.015
 history_length=2
-output_path=evals_results/klass/gsm8k-ns${num_fewshot}-${length}
+output_path=evals_results/klass-earlystop/gsm8k-ns${num_fewshot}-${length}
 
 
 # dParallel
@@ -40,7 +40,7 @@ unmask_strategy=all
 conf_threshold=0.6
 kl_threshold=0.01
 history_length=2
-output_path=evals_results/klass/minerva_math-ns${num_fewshot}-${length}
+output_path=evals_results/klass-earlystop/minerva_math-ns${num_fewshot}-${length}
 
 
 # dParallel
@@ -62,7 +62,7 @@ unmask_strategy=all
 conf_threshold=0.9
 kl_threshold=0.01
 history_length=2
-output_path=evals_results/klass/humaneval-ns${num_fewshot}-${length}
+output_path=evals_results/klass-earlystop/humaneval-ns${num_fewshot}-${length}
 
 
 # dparallel
@@ -89,7 +89,7 @@ unmask_strategy=all
 conf_threshold=0.7
 kl_threshold=0.01
 history_length=2
-output_path=evals_results/klass/mbpp-ns${num_fewshot}-${length}
+output_path=evals_results/klass-earlystop/mbpp-ns${num_fewshot}-${length}
 
 
 # parallel
